@@ -13,8 +13,15 @@ export default function Shop() {
   const category = params.get('category') || 'all';
   const sort = params.get('sort') || '';
   const search = params.get('search') || '';
+  const comingSoon = category === 'bracelets';
 
   useEffect(() => {
+    if (comingSoon) {
+      setProducts([]);
+      setError('');
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const q = new URLSearchParams();
     if (category !== 'all') q.set('category', category);
@@ -27,7 +34,7 @@ export default function Shop() {
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [category, sort, search]);
+  }, [category, sort, search, comingSoon]);
 
   const update = (key, value) => {
     const next = new URLSearchParams(params);
@@ -82,7 +89,14 @@ export default function Shop() {
         </div>
 
         {error && <p className="form-error center">{error}</p>}
-        {loading ? (
+        {comingSoon ? (
+          <div className="shop-soon">
+            <span className="soon-pill">Coming Soon</span>
+            <h3>Bracelets are on their way</h3>
+            <p>Our artisans are crafting the very first Rijisha bracelet collection right now. Stay tuned — it will be worth the wait.</p>
+            <button className="btn btn-ghost" onClick={() => update('category', 'all')}>Browse Other Pieces</button>
+          </div>
+        ) : loading ? (
           <Loader label="Laying out the collection…" />
         ) : products.length === 0 ? (
           <p className="muted center">No pieces match your search.</p>

@@ -25,6 +25,13 @@ const ART_OPTIONS = [
 
 const BG_OPTIONS = ['bg-a', 'bg-b', 'bg-c', 'bg-d'];
 
+const COLLECTIONS = [
+  { key: 'earrings', label: 'Earrings', art: 'earringsPair' },
+  { key: 'necklaces', label: 'Necklaces', art: 'necklaceCat' },
+  { key: 'bracelets', label: 'Bracelets', art: 'bangle' },
+  { key: 'antique', label: 'Antique Jewellery', art: 'tikka' },
+];
+
 const EMPTY = {
   name: '',
   category: 'earrings',
@@ -48,12 +55,18 @@ export default function Admin() {
   const [existingMedia, setExistingMedia] = useState([]); // already-uploaded: { url, type }
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [collectionImages, setCollectionImages] = useState({});
+  const [collectionBusy, setCollectionBusy] = useState('');
   const fileRef = useRef();
   const formRef = useRef();
 
   const isAdmin = !!user?.isAdmin;
   const load = () => api('/products?sort=newest').then(setProducts).catch((e) => setError(e.message));
-  useEffect(() => { if (isAdmin) load(); }, [isAdmin]);
+  useEffect(() => {
+    if (!isAdmin) return;
+    load();
+    api('/home-collections').then(setCollectionImages).catch(() => {});
+  }, [isAdmin]);
 
   if (authLoading) return <section className="section"><Loader /></section>;
 
@@ -146,6 +159,45 @@ export default function Admin() {
     }
   };
 
+  const onCollectionImage = async (key, e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setCollectionBusy(key);
+    try {
+      const data = new FormData();
+      data.append('image', file);
+      const res = await api(`/home-collections/${key}`, { method: 'PUT', body: data });
+      setCollectionImages((prev) => ({ ...prev, [key]: res.image }));
+      toast(key === 'hero'
+        ? '✓ Hero video updated — it is live on the home page'
+        : '✓ Collection photo updated — it is live on the home page');
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      setCollectionBusy('');
+    }
+  };
+
+  const resetCollectionImage = async (key) => {
+    setCollectionBusy(key);
+    try {
+      await api(`/home-collections/${key}`, { method: 'DELETE' });
+      setCollectionImages((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+      toast(key === 'hero'
+        ? 'Hero is back to the default video'
+        : 'Card is back to its default illustration');
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      setCollectionBusy('');
+    }
+  };
+
   const onLogout = () => {
     logout();
     toast('Logged out of the admin panel');
@@ -164,6 +216,97 @@ export default function Admin() {
           <span className="section-eyebrow">Store Management</span>
           <h2>Admin Panel</h2>
           <p>Add, edit or remove pieces — changes appear on the shop instantly.</p>
+        </div>
+
+        {/* Homepage media: hero video + collection card images */}
+        <div className="admin-form collection-admin">
+          <h3 className="serif">Homepage Media</h3>
+          <p className="muted collection-hint">
+            Control what visitors see first — the hero video at the top of the home page and the photos
+            on the four "Shop by Collection" cards. Reset anything to bring back its built-in default.
+          </p>
+
+          <div className="hero-admin">
+            <span className="field-label">Hero Video — top of the home page</span>
+            <div className="hero-admin-row">
+              <div className="hero-admin-preview">
+                <video
+                  key={collectionImages.hero || 'default-hero'}
+                  src={collectionImages.hero || '/videos/hero-jewellery.mp4'}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
+                {!collectionImages.hero && <span className="hero-default-tag">Default</span>}
+              </div>
+              <div className="hero-admin-info">
+                <p className="muted">
+                  This video plays inside the arched frame of the hero section. A vertical (portrait)
+                  video looks best — mp4, webm or mov, up to 50&nbsp;MB. Keep it short and seamless;
+                  it loops silently.
+                </p>
+                <div className="collection-actions">
+                  <label className={`mini-btn ${collectionBusy === 'hero' ? 'disabled' : ''}`}>
+                    {collectionBusy === 'hero' ? 'Uploading…' : collectionImages.hero ? 'Change Video' : 'Upload Video'}
+                    <input
+                      type="file"
+                      accept="video/*"
+                      hidden
+                      disabled={collectionBusy === 'hero'}
+                      onChange={(e) => onCollectionImage('hero', e)}
+                    />
+                  </label>
+                  {collectionImages.hero && (
+                    <button
+                      type="button"
+                      className="mini-btn danger"
+                      disabled={collectionBusy === 'hero'}
+                      onClick={() => resetCollectionImage('hero')}
+                    >
+                      Reset to Default
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span className="field-label">Shop by Collection — card photos</span>
+          <div className="collection-grid">
+            {COLLECTIONS.map((c) => (
+              <div className="collection-tile" key={c.key}>
+                <span className="field-label">{c.label}</span>
+                <div className={`collection-preview cat-${c.key} ${collectionImages[c.key] ? 'has-photo' : ''}`}>
+                  {collectionImages[c.key]
+                    ? <img src={collectionImages[c.key]} alt={`${c.label} collection`} />
+                    : <JewelArt art={c.art} />}
+                </div>
+                <div className="collection-actions">
+                  <label className={`mini-btn ${collectionBusy === c.key ? 'disabled' : ''}`}>
+                    {collectionBusy === c.key ? 'Uploading…' : collectionImages[c.key] ? 'Change Photo' : 'Upload Photo'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      disabled={collectionBusy === c.key}
+                      onChange={(e) => onCollectionImage(c.key, e)}
+                    />
+                  </label>
+                  {collectionImages[c.key] && (
+                    <button
+                      type="button"
+                      className="mini-btn danger"
+                      disabled={collectionBusy === c.key}
+                      onClick={() => resetCollectionImage(c.key)}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Add / edit form */}

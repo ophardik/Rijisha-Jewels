@@ -5,8 +5,16 @@ import JewelArt from '../components/JewelArt';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
 
+const COLLECTIONS = [
+  { key: 'earrings', title: 'Earrings', sub: 'Jhumkas · Hoops · Studs · Drops', art: 'earringsPair' },
+  { key: 'necklaces', title: 'Necklaces', sub: 'Pendants · Chokers · Layered Chains', art: 'necklaceCat' },
+  { key: 'bracelets', title: 'Bracelets', sub: 'Bangles · Kadas · Charm Chains', art: 'bangle', comingSoon: true },
+  { key: 'antique', title: 'Antique Jewellery', sub: 'Anklets · Maang Tikkas · More', art: 'tikka' },
+];
+
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [collectionImages, setCollectionImages] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -15,6 +23,9 @@ export default function Home() {
       .then(setProducts)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+    api('/home-collections')
+      .then(setCollectionImages)
+      .catch(() => {}); // cards fall back to their illustrations
   }, []);
 
   const featured = products.slice(0, 4);
@@ -42,8 +53,9 @@ export default function Home() {
             <div className="hero-ring"></div>
             <div className="hero-frame">
               <video
+                key={collectionImages.hero || 'default-hero'}
                 className="hero-video"
-                src="/videos/hero-jewellery.mp4"
+                src={collectionImages.hero || '/videos/hero-jewellery.mp4'}
                 autoPlay
                 muted
                 loop
@@ -70,54 +82,32 @@ export default function Home() {
             <p>Four signatures, one promise — silver that speaks softly and shines forever.</p>
           </div>
           <div className="cats">
-            <Link to="/shop?category=earrings" className="cat-card cat-earrings">
-              <JewelArt art="earringsPair" />
-              <div className="cat-label">
-                <div>
-                  <h3>Earrings</h3>
-                  <span>Jhumkas · Hoops · Studs · Drops</span>
-                </div>
-                <span className="cat-arrow">
-                  <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
-                </span>
-              </div>
-            </Link>
-            <Link to="/shop?category=necklaces" className="cat-card cat-necklaces">
-              <JewelArt art="necklaceCat" />
-              <div className="cat-label">
-                <div>
-                  <h3>Necklaces</h3>
-                  <span>Pendants · Chokers · Layered Chains</span>
-                </div>
-                <span className="cat-arrow">
-                  <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
-                </span>
-              </div>
-            </Link>
-            <Link to="/shop?category=bracelets" className="cat-card cat-bracelets">
-              <JewelArt art="bangle" />
-              <div className="cat-label">
-                <div>
-                  <h3>Bracelets</h3>
-                  <span>Bangles · Kadas · Charm Chains</span>
-                </div>
-                <span className="cat-arrow">
-                  <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
-                </span>
-              </div>
-            </Link>
-            <Link to="/shop?category=antique" className="cat-card cat-antique">
-              <JewelArt art="tikka" />
-              <div className="cat-label">
-                <div>
-                  <h3>Antique Jewellery</h3>
-                  <span>Anklets · Maang Tikkas · More</span>
-                </div>
-                <span className="cat-arrow">
-                  <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
-                </span>
-              </div>
-            </Link>
+            {COLLECTIONS.map((c) => {
+              const CardTag = c.comingSoon ? 'div' : Link;
+              return (
+                <CardTag
+                  {...(c.comingSoon ? {} : { to: `/shop?category=${c.key}` })}
+                  className={`cat-card cat-${c.key} ${collectionImages[c.key] ? 'has-photo' : ''} ${c.comingSoon ? 'cat-soon' : ''}`}
+                  key={c.key}
+                >
+                  {c.comingSoon && <span className="cat-soon-badge">Coming Soon</span>}
+                  {collectionImages[c.key]
+                    ? <img src={collectionImages[c.key]} alt={`${c.title} collection`} className="cat-photo" />
+                    : <JewelArt art={c.art} />}
+                  <div className="cat-label">
+                    <div>
+                      <h3>{c.title}</h3>
+                      <span>{c.comingSoon ? 'Launching Soon · Stay Tuned' : c.sub}</span>
+                    </div>
+                    {!c.comingSoon && (
+                      <span className="cat-arrow">
+                        <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+                      </span>
+                    )}
+                  </div>
+                </CardTag>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -173,7 +163,7 @@ export default function Home() {
             <div className="story-frame">
               <JewelArt art="pendant" />
             </div>
-            <div className="story-badge">Since<br /><b>2012</b></div>
+            {/* <div className="story-badge">Since<br /><b>2012</b></div> */}
           </div>
           <div className="story-text">
             <span className="section-eyebrow">Our Story</span>

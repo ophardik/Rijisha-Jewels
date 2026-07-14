@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 // import { useCart } from '../context/CartContext'; // cart disabled — buying happens on Etsy
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
@@ -10,12 +10,25 @@ export default function Header() {
   // const { count } = useCart(); // cart disabled
   const { user, wishlist, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // NavLink only matches the pathname, so every /shop?category=... link would
+  // show as active on any shop page — match on the category ourselves
+  const activeCategory = new URLSearchParams(location.search).get('category');
+  const onShop = location.pathname === '/shop';
+  const shopClass = (cat) => (onShop && activeCategory === cat ? 'active' : '');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const close = () => setMenuOpen(false);
 
   const onLogout = () => {
@@ -38,11 +51,11 @@ export default function Header() {
           <nav className={`nav ${menuOpen ? 'open' : ''}`}>
             <ul>
               <li><NavLink to="/" onClick={close}>Home</NavLink></li>
-              <li><NavLink to="/shop" onClick={close}>Shop</NavLink></li>
-              <li><NavLink to="/shop?category=earrings" onClick={close}>Earrings</NavLink></li>
-              <li><NavLink to="/shop?category=necklaces" onClick={close}>Necklaces</NavLink></li>
-              <li><NavLink to="/shop?category=bracelets" onClick={close}>Bracelets</NavLink></li>
-              <li><NavLink to="/shop?category=antique" onClick={close}>Antique Jewellery</NavLink></li>
+              <li><NavLink to="/shop" className={() => shopClass(null)} onClick={close}>Shop</NavLink></li>
+              <li><NavLink to="/shop?category=earrings" className={() => shopClass('earrings')} onClick={close}>Earrings</NavLink></li>
+              <li><NavLink to="/shop?category=necklaces" className={() => shopClass('necklaces')} onClick={close}>Necklaces</NavLink></li>
+              <li><NavLink to="/shop?category=bracelets" className={() => shopClass('bracelets')} onClick={close}>Bracelets</NavLink></li>
+              <li><NavLink to="/shop?category=antique" className={() => shopClass('antique')} onClick={close}>Antique Jewellery</NavLink></li>
               {/* Orders disabled for now — ordering happens on Etsy
               {user && <li><NavLink to="/orders" onClick={close}>My Orders</NavLink></li>} */}
               {user?.isAdmin && <li><NavLink to="/admin" onClick={close} className="admin-link">Admin</NavLink></li>}
