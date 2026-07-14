@@ -1,0 +1,14 @@
+{
+  "name": "rijisha-jewellers",
+  "version": "1.0.0",
+  "description": "Rijisha Jewellers - MERN stack e-commerce for handcrafted 925 silver ornaments",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

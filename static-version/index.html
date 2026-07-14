@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rijisha Jewellers — Handcrafted 925 Silver Ornaments</title>
+  <meta name="description" content="Rijisha Jewellers — timeless handcrafted 925 sterling silver earrings and necklaces. Hallmarked purity, free shipping across India.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
+</head>
+<body>
+
+  <!-- Shared SVG gradients -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f4f5f7"/>
+        <stop offset="45%" stop-color="#c3c8d0"/>
+        <stop offset="75%" stop-color="#8d94a0"/>
+        <stop offset="100%" stop-color="#b9bec7"/>
+      </linearGradient>
+      <linearGradient id="silverDark" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#d9dde3"/>
+        <stop offset="55%" stop-color="#9099a5"/>
+        <stop offset="100%" stop-color="#6a717d"/>
+      </linearGradient>
+      <radialGradient id="pearl" cx="0.35" cy="0.3" r="0.9">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="60%" stop-color="#e9e6df"/>
+        <stop offset="100%" stop-color="#bcb6a9"/>
+      </radialGradient>
+      <radialGradient id="gem" cx="0.35" cy="0.3" r="0.95">
+        <stop offset="0%" stop-color="#e8f4f4"/>
+        <stop offset="55%" stop-color="#9fc6c9"/>
+        <stop offset="100%" stop-color="#5d8d91"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <!-- Announcement -->
+  <div class="announce">Free shipping across India on orders above <b>₹2,999</b> &nbsp;·&nbsp; BIS Hallmarked 925 Silver</div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <span class="logo-name">Rijisha</span>
+        <span class="logo-sub">Jewellers · Silver</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#collections">Collections</a></li>
+          <li><a href="#shop" data-filter-link="earrings">Earrings</a></li>
+          <li><a href="#shop" data-filter-link="necklaces">Necklaces</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-icons">
+        <button class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg>
+          <span class="badge" id="wishCount">0</span>
+        </button>
+        <button class="icon-btn" aria-label="Shopping bag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l1 14H5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="badge" id="bagCount">0</span>
+        </button>
+        <button class="hamburger icon-btn" id="hamburger" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <span class="hero-eyebrow">Handcrafted 925 Sterling Silver</span>
+        <h1>Where Silver<br>Becomes <em>Poetry</em></h1>
+        <p>Discover earrings and necklaces sculpted by master artisans — timeless silver ornaments designed to make every moment shine.</p>
+        <div class="hero-cta">
+          <a href="#shop" class="btn btn-dark">Shop Collection</a>
+          <a href="#story" class="btn btn-ghost">Our Story</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>92.5%</b><span>Pure Silver</span></div>
+          <div class="hero-stat"><b>5,000+</b><span>Happy Customers</span></div>
+          <div class="hero-stat"><b>100%</b><span>Hallmarked</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-ring"></div>
+        <div class="hero-frame">
+          <!-- Chandelier jhumka -->
+          <svg viewBox="0 0 200 260" aria-label="Silver jhumka earring">
+            <path d="M100 18 q-16 -14 -30 0 q-12 14 4 26 l20 14" fill="none" stroke="url(#silverDark)" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="100" cy="62" r="13" fill="url(#silver)"/>
+            <circle cx="100" cy="62" r="5" fill="url(#gem)"/>
+            <path d="M100 75 v18" stroke="url(#silverDark)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M48 150 a52 55 0 0 1 104 0 q0 12 -12 12 h-80 q-12 0 -12 -12 Z" fill="url(#silver)"/>
+            <path d="M60 150 a40 43 0 0 1 80 0" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"/>
+            <circle cx="100" cy="122" r="7" fill="url(#gem)"/>
+            <g fill="url(#pearl)">
+              <circle cx="56" cy="176" r="8"/>
+              <circle cx="78" cy="182" r="8"/>
+              <circle cx="100" cy="185" r="8"/>
+              <circle cx="122" cy="182" r="8"/>
+              <circle cx="144" cy="176" r="8"/>
+            </g>
+            <g stroke="url(#silverDark)" stroke-width="3">
+              <path d="M56 162 v6"/><path d="M78 166 v8"/><path d="M100 168 v9"/><path d="M122 166 v8"/><path d="M144 162 v6"/>
+            </g>
+            <g fill="url(#pearl)">
+              <circle cx="78" cy="208" r="6"/>
+              <circle cx="100" cy="216" r="7"/>
+              <circle cx="122" cy="208" r="6"/>
+            </g>
+            <g stroke="url(#silverDark)" stroke-width="2.5">
+              <path d="M78 190 v11"/><path d="M100 193 v15"/><path d="M122 190 v11"/>
+            </g>
+          </svg>
+        </div>
+        <div class="hero-card">
+          <div class="dot">
+            <svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <div><b>BIS Hallmark Certified</b><span>Purity you can trust</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collections -->
+  <section class="section" id="collections">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-eyebrow">Curated For You</span>
+        <h2>Shop by Collection</h2>
+        <p>Two signatures, one promise — silver that speaks softly and shines forever.</p>
+      </div>
+
+      <div class="cats">
+        <a href="#shop" class="cat-card cat-earrings reveal" data-filter-link="earrings">
+          <svg viewBox="0 0 200 260" aria-label="Earrings">
+            <g>
+              <path d="M64 22 q-12 -12 -22 0 q-9 12 3 21 l14 10" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="64" cy="60" r="10" fill="url(#silver)"/>
+              <path d="M64 70 v14" stroke="url(#silverDark)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M64 84 c-26 8 -30 44 -8 58 c22 14 44 -6 36 -30 c-6 -18 -20 -26 -28 -28 Z" fill="url(#silver)"/>
+              <circle cx="64" cy="118" r="8" fill="url(#gem)"/>
+              <circle cx="64" cy="158" r="7" fill="url(#pearl)"/>
+              <path d="M64 142 v9" stroke="url(#silverDark)" stroke-width="3"/>
+            </g>
+            <g>
+              <path d="M148 22 q-12 -12 -22 0 q-9 12 3 21 l14 10" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="148" cy="60" r="10" fill="url(#silver)"/>
+              <path d="M148 70 v14" stroke="url(#silverDark)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M148 84 c-26 8 -30 44 -8 58 c22 14 44 -6 36 -30 c-6 -18 -20 -26 -28 -28 Z" fill="url(#silver)"/>
+              <circle cx="148" cy="118" r="8" fill="url(#gem)"/>
+              <circle cx="148" cy="158" r="7" fill="url(#pearl)"/>
+              <path d="M148 142 v9" stroke="url(#silverDark)" stroke-width="3"/>
+            </g>
+          </svg>
+          <div class="cat-label">
+            <div>
+              <h3>Earrings</h3>
+              <span>Jhumkas · Hoops · Studs · Drops</span>
+            </div>
+            <span class="cat-arrow">
+              <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a href="#shop" class="cat-card cat-necklaces reveal" data-filter-link="necklaces">
+          <svg viewBox="0 0 200 260" aria-label="Necklaces">
+            <path d="M30 30 q70 95 140 0" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+            <g fill="url(#pearl)">
+              <circle cx="52" cy="58" r="6"/><circle cx="76" cy="76" r="6"/><circle cx="124" cy="76" r="6"/><circle cx="148" cy="58" r="6"/>
+            </g>
+            <path d="M100 84 v22" stroke="url(#silverDark)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="100" cy="112" r="9" fill="url(#silver)"/>
+            <path d="M100 124 c-30 14 -34 54 -8 70 c26 16 52 -8 42 -36 c-8 -22 -24 -30 -34 -34 Z" fill="url(#silver)"/>
+            <circle cx="100" cy="166" r="11" fill="url(#gem)"/>
+            <path d="M84 150 a24 24 0 0 1 20 -16" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div class="cat-label">
+            <div>
+              <h3>Necklaces</h3>
+              <span>Pendants · Chokers · Layered Chains</span>
+            </div>
+            <span class="cat-arrow">
+              <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop -->
+  <section class="section shop" id="shop">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-eyebrow">Bestsellers</span>
+        <h2>Our Signature Pieces</h2>
+        <p>Each ornament is handcrafted in 92.5% pure sterling silver and finished with anti-tarnish e-coating.</p>
+      </div>
+
+      <div class="filter-tabs reveal">
+        <button class="tab active" data-filter="all">All Pieces</button>
+        <button class="tab" data-filter="earrings">Earrings</button>
+        <button class="tab" data-filter="necklaces">Necklaces</button>
+      </div>
+
+      <div class="grid" id="productGrid">
+
+        <!-- 1. Jhumka -->
+        <article class="product reveal" data-cat="earrings">
+          <div class="product-media bg-a">
+            <span class="p-tag">Bestseller</span>
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M100 14 q-14 -12 -26 0 q-10 12 3 22 l17 12" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="100" cy="54" r="11" fill="url(#silver)"/>
+              <circle cx="100" cy="54" r="4" fill="url(#gem)"/>
+              <path d="M100 65 v14" stroke="url(#silverDark)" stroke-width="4"/>
+              <path d="M56 132 a44 48 0 0 1 88 0 q0 10 -10 10 h-68 q-10 0 -10 -10 Z" fill="url(#silver)"/>
+              <path d="M66 132 a34 38 0 0 1 68 0" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"/>
+              <g fill="url(#pearl)">
+                <circle cx="62" cy="156" r="7"/><circle cx="81" cy="161" r="7"/><circle cx="100" cy="164" r="7"/><circle cx="119" cy="161" r="7"/><circle cx="138" cy="156" r="7"/>
+              </g>
+              <g stroke="url(#silverDark)" stroke-width="2.5">
+                <path d="M62 144 v5"/><path d="M81 147 v7"/><path d="M100 149 v8"/><path d="M119 147 v7"/><path d="M138 144 v5"/>
+              </g>
+            </svg>
+            <button class="quick-add" data-name="Meera Jhumkas">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Earrings · Jhumka</span>
+            <h3>Meera Jhumkas</h3>
+            <div class="price"><b>₹2,499</b><s>₹3,199</s></div>
+            <div class="stars">★★★★★<span>(214)</span></div>
+          </div>
+        </article>
+
+        <!-- 2. Hoops -->
+        <article class="product reveal" data-cat="earrings">
+          <div class="product-media bg-b">
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M100 20 q-12 -10 -22 0 q-9 11 3 19 l12 9" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="100" cy="130" r="72" fill="none" stroke="url(#silver)" stroke-width="14"/>
+              <circle cx="100" cy="130" r="72" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-dasharray="40 320" stroke-dashoffset="-60"/>
+              <circle cx="100" cy="58" r="8" fill="url(#silver)"/>
+            </svg>
+            <button class="quick-add" data-name="Luna Bold Hoops">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Earrings · Hoops</span>
+            <h3>Luna Bold Hoops</h3>
+            <div class="price"><b>₹1,899</b></div>
+            <div class="stars">★★★★★<span>(167)</span></div>
+          </div>
+        </article>
+
+        <!-- 3. Layered necklace -->
+        <article class="product reveal" data-cat="necklaces">
+          <div class="product-media bg-c">
+            <span class="p-tag gold">New</span>
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M28 26 q72 76 144 0" fill="none" stroke="url(#silverDark)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M36 26 q64 108 128 0" fill="none" stroke="url(#silver)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M44 26 q56 142 112 0" fill="none" stroke="url(#silverDark)" stroke-width="4.5" stroke-linecap="round"/>
+              <circle cx="100" cy="64" r="7" fill="url(#pearl)"/>
+              <circle cx="100" cy="106" r="9" fill="url(#gem)"/>
+              <path d="M100 132 l14 20 -14 20 -14 -20 Z" fill="url(#silver)"/>
+              <path d="M100 138 l9 14 -9 14 -9 -14 Z" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+            </svg>
+            <button class="quick-add" data-name="Tara Layered Necklace">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Necklaces · Layered</span>
+            <h3>Tara Layered Necklace</h3>
+            <div class="price"><b>₹3,799</b><s>₹4,499</s></div>
+            <div class="stars">★★★★★<span>(98)</span></div>
+          </div>
+        </article>
+
+        <!-- 4. Pendant necklace -->
+        <article class="product reveal" data-cat="necklaces">
+          <div class="product-media bg-d">
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M30 24 q70 92 140 0" fill="none" stroke="url(#silverDark)" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9"/>
+              <path d="M100 70 v16" stroke="url(#silverDark)" stroke-width="4"/>
+              <circle cx="100" cy="92" r="7" fill="url(#silver)"/>
+              <path d="M100 100 c-24 12 -27 44 -6 57 c21 13 42 -7 34 -29 c-6 -17 -19 -24 -28 -28 Z" fill="url(#silver)"/>
+              <circle cx="100" cy="134" r="10" fill="url(#pearl)"/>
+              <path d="M88 122 a20 20 0 0 1 15 -13" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <button class="quick-add" data-name="Ira Pearl Pendant">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Necklaces · Pendant</span>
+            <h3>Ira Pearl Pendant</h3>
+            <div class="price"><b>₹2,899</b></div>
+            <div class="stars">★★★★★<span>(143)</span></div>
+          </div>
+        </article>
+
+        <!-- 5. Chandbali -->
+        <article class="product reveal" data-cat="earrings">
+          <div class="product-media bg-b">
+            <span class="p-tag gold">Festive</span>
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M100 16 q-13 -11 -24 0 q-9 11 3 20 l15 11" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="100" cy="54" r="10" fill="url(#silver)"/>
+              <path d="M46 96 a54 54 0 0 0 108 0 a70 70 0 0 1 -108 0 Z" fill="url(#silver)" transform="translate(0 26)"/>
+              <path d="M56 122 a44 44 0 0 0 88 0" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
+              <circle cx="100" cy="100" r="8" fill="url(#gem)"/>
+              <path d="M100 64 v26" stroke="url(#silverDark)" stroke-width="4"/>
+              <g fill="url(#pearl)">
+                <circle cx="62" cy="182" r="6"/><circle cx="81" cy="192" r="6"/><circle cx="100" cy="196" r="7"/><circle cx="119" cy="192" r="6"/><circle cx="138" cy="182" r="6"/>
+              </g>
+              <g stroke="url(#silverDark)" stroke-width="2.5">
+                <path d="M62 170 v6"/><path d="M81 178 v8"/><path d="M100 180 v9"/><path d="M119 178 v8"/><path d="M138 170 v6"/>
+              </g>
+            </svg>
+            <button class="quick-add" data-name="Noor Chandbalis">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Earrings · Chandbali</span>
+            <h3>Noor Chandbalis</h3>
+            <div class="price"><b>₹3,299</b><s>₹3,899</s></div>
+            <div class="stars">★★★★★<span>(186)</span></div>
+          </div>
+        </article>
+
+        <!-- 6. Choker -->
+        <article class="product reveal" data-cat="necklaces">
+          <div class="product-media bg-a">
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M26 60 q74 66 148 0" fill="none" stroke="url(#silver)" stroke-width="12" stroke-linecap="round"/>
+              <path d="M26 60 q74 66 148 0" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="3" stroke-linecap="round"/>
+              <g fill="url(#gem)">
+                <circle cx="58" cy="82" r="6"/><circle cx="100" cy="94" r="8"/><circle cx="142" cy="82" r="6"/>
+              </g>
+              <path d="M100 104 v14" stroke="url(#silverDark)" stroke-width="3.5"/>
+              <circle cx="100" cy="128" r="10" fill="url(#pearl)"/>
+            </svg>
+            <button class="quick-add" data-name="Aabha Choker">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Necklaces · Choker</span>
+            <h3>Aabha Choker</h3>
+            <div class="price"><b>₹4,199</b></div>
+            <div class="stars">★★★★★<span>(76)</span></div>
+          </div>
+        </article>
+
+        <!-- 7. Drop earrings -->
+        <article class="product reveal" data-cat="earrings">
+          <div class="product-media bg-d">
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M100 18 q-13 -11 -24 0 q-9 11 3 20 l15 11" fill="none" stroke="url(#silverDark)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="100" cy="56" r="9" fill="url(#silver)"/>
+              <path d="M100 65 v20" stroke="url(#silverDark)" stroke-width="4"/>
+              <ellipse cx="100" cy="130" rx="34" ry="46" fill="none" stroke="url(#silver)" stroke-width="9"/>
+              <path d="M100 96 v14" stroke="url(#silverDark)" stroke-width="3"/>
+              <circle cx="100" cy="130" r="12" fill="url(#gem)"/>
+              <circle cx="100" cy="192" r="7" fill="url(#pearl)"/>
+              <path d="M100 176 v9" stroke="url(#silverDark)" stroke-width="3"/>
+            </svg>
+            <button class="quick-add" data-name="Kaya Crystal Drops">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Earrings · Drops</span>
+            <h3>Kaya Crystal Drops</h3>
+            <div class="price"><b>₹2,199</b><s>₹2,699</s></div>
+            <div class="stars">★★★★★<span>(129)</span></div>
+          </div>
+        </article>
+
+        <!-- 8. Moon pendant -->
+        <article class="product reveal" data-cat="necklaces">
+          <div class="product-media bg-c">
+            <span class="p-tag">Bestseller</span>
+            <button class="wish" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3.4 1-4.5 2.5C10.9 4 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></button>
+            <svg viewBox="0 0 200 240">
+              <path d="M32 26 q68 84 136 0" fill="none" stroke="url(#silver)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M100 68 v18" stroke="url(#silverDark)" stroke-width="4"/>
+              <circle cx="100" cy="92" r="7" fill="url(#silver)"/>
+              <path d="M124 108 a44 44 0 1 0 8 52 a34 34 0 0 1 -8 -52 Z" fill="url(#silver)"/>
+              <circle cx="76" cy="130" r="4" fill="url(#gem)"/>
+              <circle cx="86" cy="156" r="3.5" fill="url(#gem)"/>
+              <circle cx="108" cy="168" r="3" fill="url(#gem)"/>
+            </svg>
+            <button class="quick-add" data-name="Chandni Moon Pendant">Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <span class="product-cat">Necklaces · Pendant</span>
+            <h3>Chandni Moon Pendant</h3>
+            <div class="price"><b>₹2,599</b><s>₹3,099</s></div>
+            <div class="stars">★★★★★<span>(201)</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Promises -->
+  <section class="promises">
+    <div class="container promises-inner">
+      <div class="promise reveal">
+        <span class="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <div><b>925 Sterling Silver</b><span>BIS hallmarked purity</span></div>
+      </div>
+      <div class="promise reveal">
+        <span class="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h13v10H3zM16 10h4l1 3v4h-5"/><circle cx="7" cy="19" r="1.8"/><circle cx="18" cy="19" r="1.8"/></svg></span>
+        <div><b>Free Shipping</b><span>On orders above ₹2,999</span></div>
+      </div>
+      <div class="promise reveal">
+        <span class="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span>
+        <div><b>15-Day Easy Returns</b><span>No questions asked</span></div>
+      </div>
+      <div class="promise reveal">
+        <span class="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l2.5 5.3 5.5.8-4 4 1 5.9-5-2.8-5 2.8 1-5.9-4-4 5.5-.8L12 3Z"/></svg></span>
+        <div><b>Anti-Tarnish Finish</b><span>Shine that stays</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="section" id="story">
+    <div class="container story-inner">
+      <div class="story-visual reveal">
+        <div class="story-frame">
+          <svg viewBox="0 0 200 260" aria-label="Silver pendant">
+            <path d="M30 26 q70 92 140 0" fill="none" stroke="url(#silver)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M100 72 v18" stroke="url(#silver)" stroke-width="4"/>
+            <circle cx="100" cy="96" r="8" fill="url(#silver)"/>
+            <path d="M100 106 c-28 14 -32 52 -8 68 c25 16 50 -8 40 -35 c-7 -20 -22 -28 -32 -33 Z" fill="url(#silver)"/>
+            <circle cx="100" cy="148" r="11" fill="url(#gem)"/>
+          </svg>
+        </div>
+        <div class="story-badge">Since<br><b>2012</b></div>
+      </div>
+      <div class="story-text">
+        <span class="section-eyebrow reveal">Our Story</span>
+        <h2 class="reveal">Crafted by Hand,<br>Cherished for Generations</h2>
+        <p class="reveal">Rijisha Jewellers began as a small family atelier with one belief — that silver is not just a metal, but a memory in the making. Every piece we create carries the warmth of the hands that shaped it.</p>
+        <p class="reveal">Today, our master artisans blend traditional Indian karigari with contemporary design, creating earrings and necklaces that feel as personal as they look precious.</p>
+        <ul class="story-points reveal">
+          <li><span class="tick">✓</span> Handcrafted by third-generation silversmiths</li>
+          <li><span class="tick">✓</span> Ethically sourced, 92.5% pure sterling silver</li>
+          <li><span class="tick">✓</span> Every piece BIS hallmarked &amp; quality checked</li>
+        </ul>
+        <a href="#shop" class="btn btn-dark reveal">Explore the Craft</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section testimonials">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-eyebrow">Words of Love</span>
+        <h2>What Our Customers Say</h2>
+        <p>Over 5,000 happy customers across India trust Rijisha for their silver moments.</p>
+      </div>
+      <div class="t-grid">
+        <div class="t-card reveal">
+          <div class="stars">★★★★★</div>
+          <p>"The Meera Jhumkas are even more beautiful in person. The finish is flawless and they're so light I forget I'm wearing them."</p>
+          <div class="t-who">
+            <span class="t-avatar">AS</span>
+            <div><b>Ananya Sharma</b><span>Mumbai</span></div>
+          </div>
+        </div>
+        <div class="t-card reveal">
+          <div class="stars">★★★★★</div>
+          <p>"Bought the Tara layered necklace for my sister's wedding. Everyone asked where it was from. Packaging felt like a gift itself!"</p>
+          <div class="t-who">
+            <span class="t-avatar">PR</span>
+            <div><b>Priya Raghavan</b><span>Bengaluru</span></div>
+          </div>
+        </div>
+        <div class="t-card reveal">
+          <div class="stars">★★★★★</div>
+          <p>"Six months of daily wear and my hoops still shine like day one. The anti-tarnish coating truly works. Fully worth it."</p>
+          <div class="t-who">
+            <span class="t-avatar">MK</span>
+            <div><b>Meghna Kapoor</b><span>Delhi</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="section newsletter">
+    <div class="container newsletter-inner reveal">
+      <span class="section-eyebrow">Stay in Touch</span>
+      <h2>Join the Rijisha Circle</h2>
+      <p>Be first to see new collections, artisan stories and members-only offers.</p>
+      <form class="news-form" id="newsForm">
+        <input type="email" placeholder="Enter your email address" required>
+        <button type="submit" class="btn btn-dark">Subscribe</button>
+      </form>
+      <p class="news-note">By subscribing you agree to receive our emails. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="#" class="logo">
+            <span class="logo-name">Rijisha</span>
+            <span class="logo-sub">Jewellers · Silver</span>
+          </a>
+          <p>Handcrafted 925 sterling silver earrings and necklaces — designed to be worn every day and treasured forever.</p>
+          <div class="socials">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M15 3h-3a4 4 0 0 0-4 4v3H5v4h3v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h2Z"/></svg></a>
+            <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z"/><path d="M9 9.5c.5 2.5 3 5 5.5 5.5l1-1.5-2-1-1 .5c-.8-.5-1.5-1.2-2-2l.5-1-1-2L9 9.5Z"/></svg></a>
+            <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9 20c1-3 1.5-5.5 2-8"/><path d="M11.5 12a3 3 0 1 1 3.5 3c-1 0-2-.5-2.5-1.5"/></svg></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="#shop" data-filter-link="earrings">Earrings</a></li>
+            <li><a href="#shop" data-filter-link="necklaces">Necklaces</a></li>
+            <li><a href="#shop">New Arrivals</a></li>
+            <li><a href="#shop">Bestsellers</a></li>
+            <li><a href="#shop">Gift Cards</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Shipping &amp; Delivery</a></li>
+            <li><a href="#">Returns &amp; Exchange</a></li>
+            <li><a href="#">Silver Care Guide</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h4>Contact Us</h4>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Rijisha Jewellers, MG Road,<br>Kochi, Kerala 682016</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>+91 98765 43210</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>hello@rijishajewellers.com</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Rijisha Jewellers. All rights reserved.</span>
+        <span>Handcrafted with ♥ in India</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
