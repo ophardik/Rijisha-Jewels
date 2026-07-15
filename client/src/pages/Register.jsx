@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { STRINGS } from '../strings';
 
 export default function Register() {
   const { register } = useAuth();
@@ -19,7 +20,7 @@ export default function Register() {
     setBusy(true);
     try {
       const user = await register(name, email, password);
-      toast(`Welcome to Rijisha, ${user.name.split(' ')[0]}!`);
+      toast(STRINGS.register.welcome(user.name.split(' ')[0]));
       navigate(params.get('next') || '/');
     } catch (err) {
       setError(err.message);
@@ -31,17 +32,17 @@ export default function Register() {
   return (
     <section className="section auth-section">
       <div className="auth-card">
-        <span className="section-eyebrow">Join Us</span>
-        <h2 className="serif">Create Account</h2>
+        <span className="section-eyebrow">{STRINGS.register.eyebrow}</span>
+        <h2 className="serif">{STRINGS.register.title}</h2>
         <form onSubmit={submit} className="auth-form">
-          <label>Full Name<input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" /></label>
-          <label>Email<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></label>
-          <label>Password<input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" /></label>
+          <label>{STRINGS.register.name}<input required value={name} onChange={(e) => setName(e.target.value)} placeholder={STRINGS.register.namePlaceholder} /></label>
+          <label>{STRINGS.login.email}<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={STRINGS.login.emailPlaceholder} /></label>
+          <label>{STRINGS.login.password}<input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.register.passwordPlaceholder} /></label>
           {error && <p className="form-error">{error}</p>}
-          <button className="btn btn-dark full" disabled={busy}>{busy ? 'Creating account…' : 'Create Account'}</button>
+          <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.register.busy : STRINGS.register.title}</button>
         </form>
         <p className="auth-switch">
-          Already have an account? <Link to={`/login${params.get('next') ? `?next=${params.get('next')}` : ''}`}>Log in</Link>
+          {STRINGS.register.switchText} <Link to={`/login${params.get('next') ? `?next=${params.get('next')}` : ''}`}>{STRINGS.register.switchLink}</Link>
         </p>
       </div>
     </section>

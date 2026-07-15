@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import JewelArt from '../components/JewelArt';
 import { useCart } from '../context/CartContext';
+import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
 const FREE_SHIPPING_ABOVE = 2999;
@@ -14,9 +15,9 @@ export default function Cart() {
     return (
       <section className="section">
         <div className="container center empty-state">
-          <h2 className="serif">Your bag is empty</h2>
-          <p className="muted">Beautiful silver is waiting for you.</p>
-          <Link to="/shop" className="btn btn-dark">Start Shopping</Link>
+          <h2 className="serif">{STRINGS.cart.emptyTitle}</h2>
+          <p className="muted">{STRINGS.cart.emptyText}</p>
+          <Link to="/shop" className="btn btn-dark">{STRINGS.common.startShopping}</Link>
         </div>
       </section>
     );
@@ -28,8 +29,8 @@ export default function Cart() {
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <span className="section-eyebrow">Your Bag</span>
-          <h2>Shopping Bag</h2>
+          <span className="section-eyebrow">{STRINGS.cart.eyebrow}</span>
+          <h2>{STRINGS.cart.title}</h2>
         </div>
 
         <div className="cart-layout">
@@ -60,18 +61,18 @@ export default function Cart() {
           </div>
 
           <aside className="cart-summary">
-            <h3 className="serif">Order Summary</h3>
-            <div className="sum-row"><span>Subtotal</span><b>{inr(total)}</b></div>
+            <h3 className="serif">{STRINGS.common.orderSummary}</h3>
+            <div className="sum-row"><span>{STRINGS.common.subtotal}</span><b>{inr(total)}</b></div>
             <div className="sum-row">
-              <span>Shipping</span>
-              <b>{shipping === 0 ? 'Free' : inr(shipping)}</b>
+              <span>{STRINGS.common.shipping}</span>
+              <b>{shipping === 0 ? STRINGS.common.freeShipping : inr(shipping)}</b>
             </div>
             {shipping > 0 && (
-              <p className="ship-hint">Add {inr(FREE_SHIPPING_ABOVE - total)} more for free shipping</p>
+              <p className="ship-hint">{STRINGS.cart.shipHint(inr(FREE_SHIPPING_ABOVE - total))}</p>
             )}
-            <div className="sum-row grand"><span>Total</span><b>{inr(total + shipping)}</b></div>
-            <button className="btn btn-dark full" onClick={() => navigate('/checkout')}>Proceed to Checkout</button>
-            <Link to="/shop" className="continue-link">← Continue shopping</Link>
+            <div className="sum-row grand"><span>{STRINGS.common.total}</span><b>{inr(total + shipping)}</b></div>
+            <button className="btn btn-dark full" onClick={() => navigate('/checkout')}>{STRINGS.cart.proceed}</button>
+            <Link to="/shop" className="continue-link">{STRINGS.cart.continueShopping}</Link>
           </aside>
         </div>
       </div>

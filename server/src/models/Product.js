@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
+import { CATEGORIES, MEDIA_TYPES, MEDIA_TYPE } from '../enums.js';
 
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
-    category: { type: String, required: true, enum: ['earrings', 'necklaces', 'bracelets', 'antique'] },
+    category: { type: String, required: true, enum: CATEGORIES },
     subCategory: { type: String, default: '' },
     description: { type: String, default: '' },
     price: { type: Number, required: true },
@@ -15,7 +16,7 @@ const productSchema = new mongoose.Schema(
       type: [
         {
           url: { type: String, required: true },
-          type: { type: String, enum: ['image', 'video'], default: 'image' },
+          type: { type: String, enum: MEDIA_TYPES, default: MEDIA_TYPE.IMAGE },
         },
       ],
       default: [],

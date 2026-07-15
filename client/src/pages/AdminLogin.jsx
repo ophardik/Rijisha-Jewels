@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
 import { toast } from '../toast';
+import { STRINGS } from '../strings';
 
 export default function AdminLogin() {
   const { adminLogin, user, loading } = useAuth();
@@ -18,7 +19,7 @@ export default function AdminLogin() {
     setBusy(true);
     try {
       const user = await adminLogin(email, password);
-      toast(`Welcome back, ${user.name.split(' ')[0]}!`);
+      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]));
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -35,15 +36,15 @@ export default function AdminLogin() {
   return (
     <section className="section auth-section">
       <div className="auth-card">
-        <span className="section-eyebrow">Store Management</span>
-        <h2 className="serif">Admin Login</h2>
+        <span className="section-eyebrow">{STRINGS.adminLogin.eyebrow}</span>
+        <h2 className="serif">{STRINGS.adminLogin.title}</h2>
         <form onSubmit={submit} className="auth-form">
-          <label>Admin Email<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@rijisha.com" /></label>
-          <label>Password<input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Admin password" /></label>
+          <label>{STRINGS.adminLogin.email}<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={STRINGS.adminLogin.emailPlaceholder} /></label>
+          <label>{STRINGS.login.password}<input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.adminLogin.passwordPlaceholder} /></label>
           {error && <p className="form-error">{error}</p>}
-          <button className="btn btn-dark full" disabled={busy}>{busy ? 'Logging in…' : 'Log In as Admin'}</button>
+          <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.login.busy : STRINGS.adminLogin.submit}</button>
         </form>
-        <p className="auth-switch muted">This portal is for store administrators only.</p>
+        <p className="auth-switch muted">{STRINGS.adminLogin.note}</p>
       </div>
     </section>
   );

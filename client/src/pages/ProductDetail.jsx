@@ -7,6 +7,8 @@ import Loader from '../components/Loader';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
 import { ETSY_URL } from '../components/ProductCard';
+import { MEDIA_TYPE } from '../enums';
+import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
 
@@ -31,19 +33,19 @@ export default function ProductDetail() {
       <section className="section">
         <div className="container center">
           <p className="form-error">{error}</p>
-          <Link to="/shop" className="btn btn-dark">Back to Shop</Link>
+          <Link to="/shop" className="btn btn-dark">{STRINGS.productDetail.backToShop}</Link>
         </div>
       </section>
     );
   }
-  if (!product) return <section className="section"><Loader label="Unveiling this piece…" /></section>;
+  if (!product) return <section className="section"><Loader label={STRINGS.productDetail.loader} /></section>;
 
   const wished = wishlist?.includes(product._id);
   const discount = product.mrp ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
 
   const media = product.media?.length
     ? product.media
-    : product.image ? [{ url: product.image, type: 'image' }] : [];
+    : product.image ? [{ url: product.image, type: MEDIA_TYPE.IMAGE }] : [];
   const current = media[Math.min(activeMedia, media.length - 1)];
 
   // Cart disabled — buying happens on Etsy
@@ -58,12 +60,12 @@ export default function ProductDetail() {
 
   const onWish = async () => {
     if (!user) {
-      toast('Please log in to save to wishlist');
+      toast(STRINGS.common.loginToWishlist);
       navigate('/login');
       return;
     }
     const added = await toggleWishlist(product._id);
-    toast(added ? `♥ Added to wishlist` : `Removed from wishlist`);
+    toast(added ? STRINGS.productDetail.addedToWishlist : STRINGS.productDetail.removedFromWishlist);
   };
 
   return (
@@ -73,10 +75,10 @@ export default function ProductDetail() {
           <div className={`detail-media ${product.bg}`}>
             {product.tag && <span className="p-tag">{product.tag}</span>}
             {!current && <JewelArt art={product.art} />}
-            {current?.type === 'image' && (
+            {current?.type === MEDIA_TYPE.IMAGE && (
               <img className="product-photo" src={current.url} alt={product.name} />
             )}
-            {current?.type === 'video' && (
+            {current?.type === MEDIA_TYPE.VIDEO && (
               <video
                 key={current.url}
                 className="product-photo"
@@ -99,7 +101,7 @@ export default function ProductDetail() {
                   onClick={() => setActiveMedia(i)}
                   aria-label={`View ${m.type} ${i + 1}`}
                 >
-                  {m.type === 'video'
+                  {m.type === MEDIA_TYPE.VIDEO
                     ? <><video src={m.url} muted preload="metadata" /><span className="media-badge">▶</span></>
                     : <img src={m.url} alt="" loading="lazy" />}
                 </button>
@@ -110,34 +112,34 @@ export default function ProductDetail() {
 
         <div className="detail-info">
           <nav className="crumbs">
-            <Link to="/">Home</Link> / <Link to={`/shop?category=${product.category}`}>{product.category}</Link> / <span>{product.name}</span>
+            <Link to="/">{STRINGS.productDetail.crumbHome}</Link> / <Link to={`/shop?category=${product.category}`}>{product.category}</Link> / <span>{product.name}</span>
           </nav>
           <h1>{product.name}</h1>
           <div className="stars">
             {'★'.repeat(Math.round(product.rating))}
-            <span>{product.rating} · {product.numReviews} reviews</span>
+            <span>{STRINGS.productDetail.reviews(product.rating, product.numReviews)}</span>
           </div>
 
           <div className="detail-price">
             <b>{inr(product.price)}</b>
-            {product.mrp && <><s>{inr(product.mrp)}</s><em>{discount}% off</em></>}
+            {product.mrp && <><s>{inr(product.mrp)}</s><em>{STRINGS.productDetail.discountOff(discount)}</em></>}
           </div>
-          <p className="tax-note">Inclusive of all taxes · Free shipping above ₹2,999</p>
+          <p className="tax-note">{STRINGS.productDetail.taxNote}</p>
 
           <p className="detail-desc">{product.description}</p>
 
           <ul className="detail-points">
-            <li><span className="tick">✓</span> 92.5% pure sterling silver, BIS hallmarked</li>
-            <li><span className="tick">✓</span> Anti-tarnish e-coating for lasting shine</li>
-            <li><span className="tick">✓</span> Ships in premium gift packaging</li>
+            {STRINGS.productDetail.points.map((point) => (
+              <li key={point}><span className="tick">✓</span> {point}</li>
+            ))}
           </ul>
 
           <div className="detail-stock">
             {product.stock > 0
               ? product.stock <= 10
-                ? <span className="low-stock">Only {product.stock} left in stock</span>
-                : <span className="in-stock">In stock</span>
-              : <span className="form-error">Out of stock</span>}
+                ? <span className="low-stock">{STRINGS.productDetail.onlyLeft(product.stock)}</span>
+                : <span className="in-stock">{STRINGS.productDetail.inStock}</span>
+              : <span className="form-error">{STRINGS.productDetail.outOfStock}</span>}
           </div>
 
           <div className="detail-actions">
@@ -150,7 +152,7 @@ export default function ProductDetail() {
             <button className="btn btn-dark" onClick={onAdd} disabled={product.stock === 0}>Add to Bag</button>
             <button className="btn btn-ghost" onClick={onBuyNow} disabled={product.stock === 0}>Buy Now</button> */}
             <a className="btn btn-etsy" href={ETSY_URL} target="_blank" rel="noreferrer">
-              Buy on Etsy
+              {STRINGS.common.buyOnEtsy}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16" style={{ marginLeft: 8 }}>
                 <path d="M7 17 17 7M9 7h8v8" />
               </svg>

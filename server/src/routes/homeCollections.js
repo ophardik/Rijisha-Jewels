@@ -5,12 +5,10 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import HomeCollection from '../models/HomeCollection.js';
 import { protect, adminOnly } from '../middleware/auth.js';
+import { COLLECTION_SLOTS, HERO_SLOT } from '../enums.js';
 
 const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// The four collection cards take photos; the "hero" slot takes the home-page video.
-const CATEGORIES = ['earrings', 'necklaces', 'bracelets', 'antique'];
-const SLOTS = [...CATEGORIES, 'hero'];
 
 // ---------- image upload ----------
 const uploadDir = path.join(__dirname, '..', '..', 'uploads');
@@ -31,7 +29,7 @@ const upload = multer({
   storage,
   limits: { fileSize: 50 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (req.params.category === 'hero') {
+    if (req.params.category === HERO_SLOT) {
       if (VIDEO_RE.test(file.mimetype)) cb(null, true);
       else cb(new Error('The hero slot takes a video (mp4, webm, ogg, mov)'));
     } else if (IMAGE_RE.test(file.mimetype)) {
@@ -76,8 +74,8 @@ router.get('/', async (req, res) => {
 router.put('/:category', protect, adminOnly, uploadImage, async (req, res) => {
   try {
     const { category } = req.params;
-    if (!SLOTS.includes(category)) {
-      return res.status(400).json({ message: `Slot must be one of: ${SLOTS.join(', ')}` });
+    if (!COLLECTION_SLOTS.includes(category)) {
+      return res.status(400).json({ message: `Slot must be one of: ${COLLECTION_SLOTS.join(', ')}` });
     }
     if (!req.file) {
       return res.status(400).json({ message: 'Please choose a file to upload' });
@@ -102,8 +100,8 @@ router.put('/:category', protect, adminOnly, uploadImage, async (req, res) => {
 router.delete('/:category', protect, adminOnly, async (req, res) => {
   try {
     const { category } = req.params;
-    if (!SLOTS.includes(category)) {
-      return res.status(400).json({ message: `Slot must be one of: ${SLOTS.join(', ')}` });
+    if (!COLLECTION_SLOTS.includes(category)) {
+      return res.status(400).json({ message: `Slot must be one of: ${COLLECTION_SLOTS.join(', ')}` });
     }
 
     const doc = await HomeCollection.findOneAndDelete({ category });

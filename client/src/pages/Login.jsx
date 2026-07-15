@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { STRINGS } from '../strings';
 
 export default function Login() {
   const { login } = useAuth();
@@ -18,7 +19,7 @@ export default function Login() {
     setBusy(true);
     try {
       const user = await login(email, password);
-      toast(`Welcome back, ${user.name.split(' ')[0]}!`);
+      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]));
       navigate(params.get('next') || '/');
     } catch (err) {
       setError(err.message);
@@ -30,16 +31,16 @@ export default function Login() {
   return (
     <section className="section auth-section">
       <div className="auth-card">
-        <span className="section-eyebrow">Welcome Back</span>
-        <h2 className="serif">Log In</h2>
+        <span className="section-eyebrow">{STRINGS.login.eyebrow}</span>
+        <h2 className="serif">{STRINGS.login.title}</h2>
         <form onSubmit={submit} className="auth-form">
-          <label>Email<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></label>
-          <label>Password<input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" /></label>
+          <label>{STRINGS.login.email}<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={STRINGS.login.emailPlaceholder} /></label>
+          <label>{STRINGS.login.password}<input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.login.passwordPlaceholder} /></label>
           {error && <p className="form-error">{error}</p>}
-          <button className="btn btn-dark full" disabled={busy}>{busy ? 'Logging in…' : 'Log In'}</button>
+          <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.login.busy : STRINGS.login.title}</button>
         </form>
         <p className="auth-switch">
-          New to Rijisha? <Link to={`/register${params.get('next') ? `?next=${params.get('next')}` : ''}`}>Create an account</Link>
+          {STRINGS.login.switchText} <Link to={`/register${params.get('next') ? `?next=${params.get('next')}` : ''}`}>{STRINGS.login.switchLink}</Link>
         </p>
       </div>
     </section>

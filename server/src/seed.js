@@ -1,17 +1,18 @@
 import Product from './models/Product.js';
 import User from './models/User.js';
+import { CATEGORY, PRODUCT_TAG } from './enums.js';
 
 const products = [
   {
     name: 'Meera Jhumkas',
     slug: 'meera-jhumkas',
-    category: 'earrings',
+    category: CATEGORY.EARRINGS,
     subCategory: 'Jhumka',
     description:
       'Classic dome jhumkas handcrafted in 92.5% sterling silver, finished with a ring of freshwater-style pearls. Light on the ear, heavy on charm — the pair that goes from office wear to occasion wear effortlessly.',
     price: 2499,
     mrp: 3199,
-    tag: 'Bestseller',
+    tag: PRODUCT_TAG.BESTSELLER,
     art: 'jhumka',
     bg: 'bg-a',
     rating: 4.9,
@@ -21,7 +22,7 @@ const products = [
   {
     name: 'Luna Bold Hoops',
     slug: 'luna-bold-hoops',
-    category: 'earrings',
+    category: CATEGORY.EARRINGS,
     subCategory: 'Hoops',
     description:
       'Statement hoops with a high-polish mirror finish and secure click closure. Anti-tarnish e-coated so they shine through daily wear, season after season.',
@@ -37,13 +38,13 @@ const products = [
   {
     name: 'Tara Layered Necklace',
     slug: 'tara-layered-necklace',
-    category: 'necklaces',
+    category: CATEGORY.NECKLACES,
     subCategory: 'Layered',
     description:
       'Three delicate silver chains fall in perfect graduation, anchored by a pearl, a gemstone and a hand-cut kite drop. One necklace, the effect of three.',
     price: 3799,
     mrp: 4499,
-    tag: 'New',
+    tag: PRODUCT_TAG.NEW,
     art: 'layered',
     bg: 'bg-c',
     rating: 4.9,
@@ -53,7 +54,7 @@ const products = [
   {
     name: 'Ira Pearl Pendant',
     slug: 'ira-pearl-pendant',
-    category: 'necklaces',
+    category: CATEGORY.NECKLACES,
     subCategory: 'Pendant',
     description:
       'A sculpted teardrop of sterling silver cradles a luminous pearl centre on a fine ball chain. Minimal enough for every day, special enough for evenings.',
@@ -69,13 +70,13 @@ const products = [
   {
     name: 'Noor Chandbalis',
     slug: 'noor-chandbalis',
-    category: 'earrings',
+    category: CATEGORY.EARRINGS,
     subCategory: 'Chandbali',
     description:
       'Crescent-moon chandbalis with a gemstone heart and a fringe of dancing pearls. Handcrafted for festive nights, weddings and every sangeet in between.',
     price: 3299,
     mrp: 3899,
-    tag: 'Festive',
+    tag: PRODUCT_TAG.FESTIVE,
     art: 'chandbali',
     bg: 'bg-b',
     rating: 4.9,
@@ -85,7 +86,7 @@ const products = [
   {
     name: 'Aabha Choker',
     slug: 'aabha-choker',
-    category: 'necklaces',
+    category: CATEGORY.NECKLACES,
     subCategory: 'Choker',
     description:
       'A sleek silver collar set with three gemstones and a single pearl drop. Sits close to the neckline — architectural, modern, unmissable.',
@@ -101,7 +102,7 @@ const products = [
   {
     name: 'Kaya Crystal Drops',
     slug: 'kaya-crystal-drops',
-    category: 'earrings',
+    category: CATEGORY.EARRINGS,
     subCategory: 'Drops',
     description:
       'Elongated oval drops framing a hand-set crystal, ending in a single pearl. Movement in every step — these are earrings that catch light and attention.',
@@ -117,13 +118,13 @@ const products = [
   {
     name: 'Chandni Moon Pendant',
     slug: 'chandni-moon-pendant',
-    category: 'necklaces',
+    category: CATEGORY.NECKLACES,
     subCategory: 'Pendant',
     description:
       'A crescent moon in brushed sterling silver, scattered with tiny gemstones like stars. Our most-gifted piece — because everyone has someone who loves the moon.',
     price: 2599,
     mrp: 3099,
-    tag: 'Bestseller',
+    tag: PRODUCT_TAG.BESTSELLER,
     art: 'moon',
     bg: 'bg-c',
     rating: 4.9,
@@ -133,13 +134,13 @@ const products = [
   {
     name: 'Kiara Kada Bangle',
     slug: 'kiara-kada-bangle',
-    category: 'bracelets',
+    category: CATEGORY.BRACELETS,
     subCategory: 'Bangle',
     description:
       'A sleek sterling silver kada with three hand-set gemstones and a single pearl accent. Solid, smooth and made to be stacked — or stunning alone.',
     price: 2799,
     mrp: 3299,
-    tag: 'New',
+    tag: PRODUCT_TAG.NEW,
     art: 'bangle',
     bg: 'bg-b',
     rating: 4.8,
@@ -149,7 +150,7 @@ const products = [
   {
     name: 'Zoya Charm Bracelet',
     slug: 'zoya-charm-bracelet',
-    category: 'bracelets',
+    category: CATEGORY.BRACELETS,
     subCategory: 'Charm',
     description:
       'A delicate silver chain strung with a pearl, a gemstone and a tiny moon charm. Light as a whisper, personal as a signature.',
@@ -165,13 +166,13 @@ const products = [
   {
     name: 'Payal Silver Anklets',
     slug: 'payal-silver-anklets',
-    category: 'antique',
+    category: CATEGORY.ANTIQUE,
     subCategory: 'Anklet',
     description:
       'A classic double-strand payal in pure silver with tiny ghungroo bells that sing softly with every step. Sold as a pair, loved for a lifetime.',
     price: 1999,
     mrp: null,
-    tag: 'Bestseller',
+    tag: PRODUCT_TAG.BESTSELLER,
     art: 'anklet',
     bg: 'bg-d',
     rating: 4.9,
@@ -181,13 +182,13 @@ const products = [
   {
     name: 'Ishta Maang Tikka',
     slug: 'ishta-maang-tikka',
-    category: 'antique',
+    category: CATEGORY.ANTIQUE,
     subCategory: 'Maang Tikka',
     description:
       'A regal maang tikka with a gemstone-set teardrop and a fringe of pearls on a fine silver chain. The finishing touch for festive and bridal looks.',
     price: 2499,
     mrp: 2999,
-    tag: 'Festive',
+    tag: PRODUCT_TAG.FESTIVE,
     art: 'tikka',
     bg: 'bg-c',
     rating: 4.8,
@@ -198,7 +199,7 @@ const products = [
 
 export async function seedProducts() {
   // The 'ornaments' category was renamed to 'antique' — migrate any old documents.
-  const renamed = await Product.updateMany({ category: 'ornaments' }, { category: 'antique' });
+  const renamed = await Product.updateMany({ category: 'ornaments' }, { category: CATEGORY.ANTIQUE });
   if (renamed.modifiedCount > 0) {
     console.log(`Migrated ${renamed.modifiedCount} products from 'ornaments' to 'antique'`);
   }

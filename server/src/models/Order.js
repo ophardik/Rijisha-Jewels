@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ORDER_STATUSES, ORDER_STATUS, PAYMENT_METHOD } from '../enums.js';
 
 const orderSchema = new mongoose.Schema(
   {
@@ -22,11 +23,11 @@ const orderSchema = new mongoose.Schema(
     itemsTotal: { type: Number, required: true },
     shippingFee: { type: Number, required: true, default: 0 },
     grandTotal: { type: Number, required: true },
-    paymentMethod: { type: String, default: 'COD' },
+    paymentMethod: { type: String, default: PAYMENT_METHOD.COD },
     status: {
       type: String,
-      enum: ['placed', 'confirmed', 'shipped', 'delivered', 'cancelled'],
-      default: 'placed',
+      enum: ORDER_STATUSES,
+      default: ORDER_STATUS.PLACED,
     },
   },
   { timestamps: true }

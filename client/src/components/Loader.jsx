@@ -1,7 +1,8 @@
 import JewelArt from './JewelArt';
+import { STRINGS } from '../strings';
 
 // Animated loading indicator — a swinging silver jhumka with sparkles.
-export default function Loader({ label = 'Polishing the silver…' }) {
+export default function Loader({ label = STRINGS.common.loaderDefault }) {
   return (
     <div className="loader" role="status" aria-label={label}>
       <div className="loader-stage">

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/auth.js';
+import { PAYMENT_METHOD } from '../enums.js';
 
 const router = Router();
 const FREE_SHIPPING_ABOVE = 2999;
@@ -42,7 +43,7 @@ router.post('/', protect, async (req, res) => {
       itemsTotal,
       shippingFee,
       grandTotal: itemsTotal + shippingFee,
-      paymentMethod: paymentMethod === 'UPI' ? 'UPI' : 'COD',
+      paymentMethod: paymentMethod === PAYMENT_METHOD.UPI ? PAYMENT_METHOD.UPI : PAYMENT_METHOD.COD,
     });
 
     // Decrement stock

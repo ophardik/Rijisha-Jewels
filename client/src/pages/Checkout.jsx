@@ -4,6 +4,8 @@ import { api } from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { PAYMENT_METHOD } from '../enums';
+import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
 const FREE_SHIPPING_ABOVE = 2999;
@@ -22,7 +24,7 @@ export default function Checkout() {
     state: '',
     pincode: '',
   });
-  const [payment, setPayment] = useState('COD');
+  const [payment, setPayment] = useState(PAYMENT_METHOD.COD);
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState('');
 
@@ -30,9 +32,9 @@ export default function Checkout() {
     return (
       <section className="section">
         <div className="container center empty-state">
-          <h2 className="serif">Please log in to checkout</h2>
-          <p className="muted">Your bag is saved — log in or create an account to place your order.</p>
-          <Link to="/login?next=/checkout" className="btn btn-dark">Log In</Link>
+          <h2 className="serif">{STRINGS.checkout.loginTitle}</h2>
+          <p className="muted">{STRINGS.checkout.loginText}</p>
+          <Link to="/login?next=/checkout" className="btn btn-dark">{STRINGS.common.logIn}</Link>
         </div>
       </section>
     );
@@ -42,8 +44,8 @@ export default function Checkout() {
     return (
       <section className="section">
         <div className="container center empty-state">
-          <h2 className="serif">Your bag is empty</h2>
-          <Link to="/shop" className="btn btn-dark">Start Shopping</Link>
+          <h2 className="serif">{STRINGS.checkout.emptyTitle}</h2>
+          <Link to="/shop" className="btn btn-dark">{STRINGS.common.startShopping}</Link>
         </div>
       </section>
     );
@@ -66,7 +68,7 @@ export default function Checkout() {
         },
       });
       clear();
-      toast('✓ Order placed successfully!');
+      toast(STRINGS.checkout.orderPlaced);
       navigate('/orders', { state: { justPlaced: order._id } });
     } catch (err) {
       setError(err.message);
@@ -79,50 +81,50 @@ export default function Checkout() {
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <span className="section-eyebrow">Almost There</span>
-          <h2>Checkout</h2>
+          <span className="section-eyebrow">{STRINGS.checkout.eyebrow}</span>
+          <h2>{STRINGS.checkout.title}</h2>
         </div>
 
         <form className="checkout-layout" onSubmit={placeOrder}>
           <div className="checkout-form">
-            <h3 className="serif">Shipping Details</h3>
+            <h3 className="serif">{STRINGS.checkout.shippingDetails}</h3>
             <div className="field-grid">
-              <label>Full Name<input required value={form.fullName} onChange={set('fullName')} placeholder="Your full name" /></label>
-              <label>Phone<input required value={form.phone} onChange={set('phone')} placeholder="10-digit mobile number" pattern="[0-9]{10}" title="Enter a 10-digit phone number" /></label>
-              <label className="wide">Address<input required value={form.address} onChange={set('address')} placeholder="House no., street, area" /></label>
-              <label>City<input required value={form.city} onChange={set('city')} placeholder="City" /></label>
-              <label>State<input required value={form.state} onChange={set('state')} placeholder="State" /></label>
-              <label>Pincode<input required value={form.pincode} onChange={set('pincode')} placeholder="6-digit pincode" pattern="[0-9]{6}" title="Enter a 6-digit pincode" /></label>
+              <label>{STRINGS.checkout.fullName}<input required value={form.fullName} onChange={set('fullName')} placeholder={STRINGS.checkout.fullNamePlaceholder} /></label>
+              <label>{STRINGS.checkout.phone}<input required value={form.phone} onChange={set('phone')} placeholder={STRINGS.checkout.phonePlaceholder} pattern="[0-9]{10}" title={STRINGS.checkout.phoneHint} /></label>
+              <label className="wide">{STRINGS.checkout.address}<input required value={form.address} onChange={set('address')} placeholder={STRINGS.checkout.addressPlaceholder} /></label>
+              <label>{STRINGS.checkout.city}<input required value={form.city} onChange={set('city')} placeholder={STRINGS.checkout.city} /></label>
+              <label>{STRINGS.checkout.state}<input required value={form.state} onChange={set('state')} placeholder={STRINGS.checkout.state} /></label>
+              <label>{STRINGS.checkout.pincode}<input required value={form.pincode} onChange={set('pincode')} placeholder={STRINGS.checkout.pincodePlaceholder} pattern="[0-9]{6}" title={STRINGS.checkout.pincodeHint} /></label>
             </div>
 
-            <h3 className="serif">Payment Method</h3>
+            <h3 className="serif">{STRINGS.checkout.paymentMethod}</h3>
             <div className="pay-options">
-              <label className={`pay-option ${payment === 'COD' ? 'selected' : ''}`}>
-                <input type="radio" name="payment" value="COD" checked={payment === 'COD'} onChange={() => setPayment('COD')} />
-                <b>Cash on Delivery</b>
-                <span>Pay when your order arrives</span>
+              <label className={`pay-option ${payment === PAYMENT_METHOD.COD ? 'selected' : ''}`}>
+                <input type="radio" name="payment" value={PAYMENT_METHOD.COD} checked={payment === PAYMENT_METHOD.COD} onChange={() => setPayment(PAYMENT_METHOD.COD)} />
+                <b>{STRINGS.checkout.codTitle}</b>
+                <span>{STRINGS.checkout.codText}</span>
               </label>
-              <label className={`pay-option ${payment === 'UPI' ? 'selected' : ''}`}>
-                <input type="radio" name="payment" value="UPI" checked={payment === 'UPI'} onChange={() => setPayment('UPI')} />
-                <b>UPI</b>
-                <span>Pay on delivery via UPI</span>
+              <label className={`pay-option ${payment === PAYMENT_METHOD.UPI ? 'selected' : ''}`}>
+                <input type="radio" name="payment" value={PAYMENT_METHOD.UPI} checked={payment === PAYMENT_METHOD.UPI} onChange={() => setPayment(PAYMENT_METHOD.UPI)} />
+                <b>{STRINGS.checkout.upiTitle}</b>
+                <span>{STRINGS.checkout.upiText}</span>
               </label>
             </div>
           </div>
 
           <aside className="cart-summary">
-            <h3 className="serif">Order Summary</h3>
+            <h3 className="serif">{STRINGS.common.orderSummary}</h3>
             {items.map((i) => (
               <div className="sum-row small" key={i.productId}>
                 <span>{i.name} × {i.qty}</span><b>{inr(i.price * i.qty)}</b>
               </div>
             ))}
-            <div className="sum-row"><span>Subtotal</span><b>{inr(total)}</b></div>
-            <div className="sum-row"><span>Shipping</span><b>{shipping === 0 ? 'Free' : inr(shipping)}</b></div>
-            <div className="sum-row grand"><span>Total</span><b>{inr(total + shipping)}</b></div>
+            <div className="sum-row"><span>{STRINGS.common.subtotal}</span><b>{inr(total)}</b></div>
+            <div className="sum-row"><span>{STRINGS.common.shipping}</span><b>{shipping === 0 ? STRINGS.common.freeShipping : inr(shipping)}</b></div>
+            <div className="sum-row grand"><span>{STRINGS.common.total}</span><b>{inr(total + shipping)}</b></div>
             {error && <p className="form-error">{error}</p>}
             <button className="btn btn-dark full" disabled={placing}>
-              {placing ? 'Placing Order…' : `Place Order · ${inr(total + shipping)}`}
+              {placing ? STRINGS.checkout.placing : STRINGS.checkout.placeOrder(inr(total + shipping))}
             </button>
           </aside>
         </form>

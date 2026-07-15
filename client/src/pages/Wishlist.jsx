@@ -4,14 +4,13 @@ import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { STRINGS } from '../strings';
 
 export default function Wishlist() {
   const { user, wishlist, loading: authLoading } = useAuth();
   const [products, setProducts] = useState(null);
   const [error, setError] = useState('');
 
-
-  
   useEffect(() => {
     if (!user) return;
     api('/wishlist').then(setProducts).catch((err) => setError(err.message));
@@ -23,9 +22,9 @@ export default function Wishlist() {
     return (
       <section className="section">
         <div className="container center empty-state">
-          <h2 className="serif">Log in to see your wishlist</h2>
-          <p className="muted">Save the pieces you love and find them here anytime.</p>
-          <Link to="/login?next=/wishlist" className="btn btn-dark">Log In</Link>
+          <h2 className="serif">{STRINGS.wishlist.loginTitle}</h2>
+          <p className="muted">{STRINGS.wishlist.loginText}</p>
+          <Link to="/login?next=/wishlist" className="btn btn-dark">{STRINGS.common.logIn}</Link>
         </div>
       </section>
     );
@@ -35,16 +34,16 @@ export default function Wishlist() {
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <span className="section-eyebrow">Saved With Love</span>
-          <h2>My Wishlist</h2>
+          <span className="section-eyebrow">{STRINGS.wishlist.eyebrow}</span>
+          <h2>{STRINGS.wishlist.title}</h2>
         </div>
         {error && <p className="form-error center">{error}</p>}
         {products === null ? (
-          <Loader label="Gathering your favourites…" />
+          <Loader label={STRINGS.wishlist.loader} />
         ) : products.length === 0 ? (
           <div className="center empty-state">
-            <p className="muted">Nothing saved yet — tap the ♥ on any piece you love.</p>
-            <Link to="/shop" className="btn btn-dark">Browse Pieces</Link>
+            <p className="muted">{STRINGS.wishlist.empty}</p>
+            <Link to="/shop" className="btn btn-dark">{STRINGS.wishlist.browse}</Link>
           </div>
         ) : (
           <div className="grid">

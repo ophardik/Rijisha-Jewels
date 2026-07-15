@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { CATEGORY, CATEGORY_LABEL, CATEGORY_ALL, SORT } from '../enums';
+import { STRINGS } from '../strings';
 
 export default function Shop() {
   const [params, setParams] = useSearchParams();
@@ -10,10 +12,10 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const category = params.get('category') || 'all';
+  const category = params.get('category') || CATEGORY_ALL;
   const sort = params.get('sort') || '';
   const search = params.get('search') || '';
-  const comingSoon = category === 'bracelets';
+  const comingSoon = category === CATEGORY.BRACELETS;
 
   useEffect(() => {
     if (comingSoon) {
@@ -24,7 +26,7 @@ export default function Shop() {
     }
     setLoading(true);
     const q = new URLSearchParams();
-    if (category !== 'all') q.set('category', category);
+    if (category !== CATEGORY_ALL) q.set('category', category);
     if (sort) q.set('sort', sort);
     if (search) q.set('search', search);
     api(`/products?${q}`)
@@ -38,7 +40,7 @@ export default function Shop() {
 
   const update = (key, value) => {
     const next = new URLSearchParams(params);
-    if (value && value !== 'all') next.set(key, value);
+    if (value && value !== CATEGORY_ALL) next.set(key, value);
     else next.delete(key);
     setParams(next, { replace: true });
   };
@@ -47,19 +49,16 @@ export default function Shop() {
     <section className="section shop-page">
       <div className="container">
         <div className="section-head">
-          <span className="section-eyebrow">The Collection</span>
-          <h2>Shop Silver Jewellery</h2>
-          <p>Every piece handcrafted in 92.5% sterling silver with an anti-tarnish finish.</p>
+          <span className="section-eyebrow">{STRINGS.shop.eyebrow}</span>
+          <h2>{STRINGS.shop.title}</h2>
+          <p>{STRINGS.shop.text}</p>
         </div>
 
         <div className="shop-toolbar">
           <div className="filter-tabs">
             {[
-              { value: 'all', label: 'All Pieces' },
-              { value: 'earrings', label: 'Earrings' },
-              { value: 'necklaces', label: 'Necklaces' },
-              { value: 'bracelets', label: 'Bracelets' },
-              { value: 'antique', label: 'Antique Jewellery' },
+              { value: CATEGORY_ALL, label: STRINGS.shop.allPieces },
+              ...Object.values(CATEGORY).map((value) => ({ value, label: CATEGORY_LABEL[value] })),
             ].map((cat) => (
               <button
                 key={cat.value}
@@ -74,16 +73,16 @@ export default function Shop() {
             <input
               className="search-input"
               type="search"
-              placeholder="Search jewellery..."
+              placeholder={STRINGS.shop.searchPlaceholder}
               value={search}
               onChange={(e) => update('search', e.target.value)}
             />
             <select className="sort-select" value={sort} onChange={(e) => update('sort', e.target.value)}>
-              <option value="">Featured</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-              <option value="newest">Newest</option>
+              <option value="">{STRINGS.shop.sortFeatured}</option>
+              <option value={SORT.PRICE_ASC}>{STRINGS.shop.sortPriceAsc}</option>
+              <option value={SORT.PRICE_DESC}>{STRINGS.shop.sortPriceDesc}</option>
+              <option value={SORT.RATING}>{STRINGS.shop.sortRating}</option>
+              <option value={SORT.NEWEST}>{STRINGS.shop.sortNewest}</option>
             </select>
           </div>
         </div>
@@ -91,15 +90,15 @@ export default function Shop() {
         {error && <p className="form-error center">{error}</p>}
         {comingSoon ? (
           <div className="shop-soon">
-            <span className="soon-pill">Coming Soon</span>
-            <h3>Bracelets are on their way</h3>
-            <p>Our artisans are crafting the very first Rijisha bracelet collection right now. Stay tuned — it will be worth the wait.</p>
-            <button className="btn btn-ghost" onClick={() => update('category', 'all')}>Browse Other Pieces</button>
+            <span className="soon-pill">{STRINGS.shop.soonPill}</span>
+            <h3>{STRINGS.shop.soonTitle}</h3>
+            <p>{STRINGS.shop.soonText}</p>
+            <button className="btn btn-ghost" onClick={() => update('category', CATEGORY_ALL)}>{STRINGS.shop.browseOther}</button>
           </div>
         ) : loading ? (
-          <Loader label="Laying out the collection…" />
+          <Loader label={STRINGS.shop.loader} />
         ) : products.length === 0 ? (
-          <p className="muted center">No pieces match your search.</p>
+          <p className="muted center">{STRINGS.shop.noMatch}</p>
         ) : (
           <div className="grid">
             {products.map((p) => <ProductCard key={p._id} product={p} />)}

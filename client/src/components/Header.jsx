@@ -3,6 +3,8 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 // import { useCart } from '../context/CartContext'; // cart disabled — buying happens on Etsy
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { CATEGORY, CATEGORY_LABEL } from '../enums';
+import { STRINGS } from '../strings';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -33,39 +35,42 @@ export default function Header() {
 
   const onLogout = () => {
     logout();
-    toast('You have been logged out');
+    toast(STRINGS.header.loggedOut);
     navigate('/');
   };
 
   return (
     <>
       <div className="announce">
-        Currently We accept ordrs from etsy only; 
+        {STRINGS.header.announcement}
       </div>
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container header-inner">
           <Link to="/" className="logo" onClick={close}>
-            <img className="logo-img" src="/logo.png" alt="Rijisha Atelier — Handcrafted Elegance, Timelessly Yours" />
+            <img className="logo-img" src="/logo.png" alt={STRINGS.header.logoAlt} />
           </Link>
 
           <nav className={`nav ${menuOpen ? 'open' : ''}`}>
             <ul>
-              <li><NavLink to="/" onClick={close}>Home</NavLink></li>
-              <li><NavLink to="/shop" className={() => shopClass(null)} onClick={close}>Shop</NavLink></li>
-              <li><NavLink to="/shop?category=earrings" className={() => shopClass('earrings')} onClick={close}>Earrings</NavLink></li>
-              <li><NavLink to="/shop?category=necklaces" className={() => shopClass('necklaces')} onClick={close}>Necklaces</NavLink></li>
-              <li><NavLink to="/shop?category=bracelets" className={() => shopClass('bracelets')} onClick={close}>Bracelets</NavLink></li>
-              <li><NavLink to="/shop?category=antique" className={() => shopClass('antique')} onClick={close}>Antique Jewellery</NavLink></li>
+              <li><NavLink to="/" onClick={close}>{STRINGS.header.navHome}</NavLink></li>
+              <li><NavLink to="/shop" className={() => shopClass(null)} onClick={close}>{STRINGS.header.navShop}</NavLink></li>
+              {Object.values(CATEGORY).map((category) => (
+                <li key={category}>
+                  <NavLink to={`/shop?category=${category}`} className={() => shopClass(category)} onClick={close}>
+                    {CATEGORY_LABEL[category]}
+                  </NavLink>
+                </li>
+              ))}
               {/* Orders disabled for now — ordering happens on Etsy
               {user && <li><NavLink to="/orders" onClick={close}>My Orders</NavLink></li>} */}
-              {user?.isAdmin && <li><NavLink to="/admin" onClick={close} className="admin-link">Admin</NavLink></li>}
+              {user?.isAdmin && <li><NavLink to="/admin" onClick={close} className="admin-link">{STRINGS.header.navAdmin}</NavLink></li>}
             </ul>
           </nav>
 
           <div className="header-icons">
             {user ? (
               <>
-                <span className="hello">Hi, {user.name.split(' ')[0]}</span>
+                <span className="hello">{STRINGS.header.hello(user.name.split(' ')[0])}</span>
                 <button className="icon-btn" onClick={onLogout} aria-label="Log out" title="Log out">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />

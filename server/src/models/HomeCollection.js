@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { COLLECTION_SLOTS } from '../enums.js';
 
 // One document per admin-customisable home-page slot: the four collection
 // cards (photo each) and the hero video. If no document exists for a slot,
@@ -9,7 +10,7 @@ const homeCollectionSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      enum: ['earrings', 'necklaces', 'bracelets', 'antique', 'hero'],
+      enum: COLLECTION_SLOTS,
     },
     image: { type: String, required: true },
   },

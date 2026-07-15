@@ -4,13 +4,15 @@ import { api } from '../api';
 import JewelArt from '../components/JewelArt';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT } from '../enums';
+import { STRINGS } from '../strings';
 
 const COLLECTIONS = [
-  { key: 'earrings', title: 'Earrings', sub: 'Jhumkas · Hoops · Studs · Drops', art: 'earringsPair' },
-  { key: 'necklaces', title: 'Necklaces', sub: 'Pendants · Chokers · Layered Chains', art: 'necklaceCat' },
-  { key: 'bracelets', title: 'Bracelets', sub: 'Bangles · Kadas · Charm Chains', art: 'bangle', comingSoon: true },
-  { key: 'antique', title: 'Antique Jewellery', sub: 'Anklets · Maang Tikkas · More', art: 'tikka' },
-];
+  { key: CATEGORY.EARRINGS, art: 'earringsPair' },
+  { key: CATEGORY.NECKLACES, art: 'necklaceCat' },
+  { key: CATEGORY.BRACELETS, art: 'bangle', comingSoon: true },
+  { key: CATEGORY.ANTIQUE, art: 'tikka' },
+].map((c) => ({ ...c, title: CATEGORY_LABEL[c.key], sub: STRINGS.home.collectionSub[c.key] }));
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -19,7 +21,7 @@ export default function Home() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api('/products?sort=rating')
+    api(`/products?sort=${SORT.RATING}`)
       .then(setProducts)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -36,31 +38,31 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-text">
-            <span className="hero-eyebrow">Handcrafted 925 Sterling Silver</span>
-            <h1>Where Silver<br />Becomes <em>Poetry</em></h1>
-            <p>Discover earrings and necklaces sculpted by master artisans — timeless silver jewellery designed to make every moment shine.</p>
+            <span className="hero-eyebrow">{STRINGS.home.heroEyebrow}</span>
+            <h1>{STRINGS.home.heroTitle}</h1>
+            <p>{STRINGS.home.heroText}</p>
             <div className="hero-cta">
-              <Link to="/shop" className="btn btn-dark">Shop Collection</Link>
-              <a href="#story" className="btn btn-ghost">Our Story</a>
+              <Link to="/shop" className="btn btn-dark">{STRINGS.home.heroCtaShop}</Link>
+              <a href="#story" className="btn btn-ghost">{STRINGS.home.heroCtaStory}</a>
             </div>
             <div className="hero-stats">
-              <div className="hero-stat"><b>92.5%</b><span>Pure Silver</span></div>
-              <div className="hero-stat"><b>5,000+</b><span>Happy Customers</span></div>
-              <div className="hero-stat"><b>100%</b><span>Hallmarked</span></div>
+              {STRINGS.home.heroStats.map((stat) => (
+                <div className="hero-stat" key={stat.label}><b>{stat.value}</b><span>{stat.label}</span></div>
+              ))}
             </div>
           </div>
           <div className="hero-visual">
             <div className="hero-ring"></div>
             <div className="hero-frame">
               <video
-                key={collectionImages.hero || 'default-hero'}
+                key={collectionImages[HERO_SLOT] || 'default-hero'}
                 className="hero-video"
-                src={collectionImages.hero || '/videos/hero-jewellery.mp4'}
+                src={collectionImages[HERO_SLOT] || '/videos/hero-jewellery.mp4'}
                 autoPlay
                 muted
                 loop
                 playsInline
-                aria-label="Model flaunting Rijisha silver jewellery"
+                aria-label={STRINGS.home.heroVideoAria}
               />
             </div>
             {/* <div className="hero-card">
@@ -77,9 +79,9 @@ export default function Home() {
       <section className="section">
         <div className="container">
           <div className="section-head">
-            <span className="section-eyebrow">Curated For You</span>
-            <h2>Shop by Collection</h2>
-            <p>Four signatures, one promise — silver that speaks softly and shines forever.</p>
+            <span className="section-eyebrow">{STRINGS.home.collectionsEyebrow}</span>
+            <h2>{STRINGS.home.collectionsTitle}</h2>
+            <p>{STRINGS.home.collectionsText}</p>
           </div>
           <div className="cats">
             {COLLECTIONS.map((c) => {
@@ -90,14 +92,14 @@ export default function Home() {
                   className={`cat-card cat-${c.key} ${collectionImages[c.key] ? 'has-photo' : ''} ${c.comingSoon ? 'cat-soon' : ''}`}
                   key={c.key}
                 >
-                  {c.comingSoon && <span className="cat-soon-badge">Coming Soon</span>}
+                  {c.comingSoon && <span className="cat-soon-badge">{STRINGS.home.comingSoonBadge}</span>}
                   {collectionImages[c.key]
-                    ? <img src={collectionImages[c.key]} alt={`${c.title} collection`} className="cat-photo" />
+                    ? <img src={collectionImages[c.key]} alt={STRINGS.home.collectionAlt(c.title)} className="cat-photo" />
                     : <JewelArt art={c.art} />}
                   <div className="cat-label">
                     <div>
                       <h3>{c.title}</h3>
-                      <span>{c.comingSoon ? 'Launching Soon · Stay Tuned' : c.sub}</span>
+                      <span>{c.comingSoon ? STRINGS.home.comingSoonSub : c.sub}</span>
                     </div>
                     {!c.comingSoon && (
                       <span className="cat-arrow">
@@ -116,20 +118,20 @@ export default function Home() {
       <section className="section shop-band">
         <div className="container">
           <div className="section-head">
-            <span className="section-eyebrow">Bestsellers</span>
-            <h2>Our Signature Pieces</h2>
-            <p>Loved, reviewed and re-ordered — straight from the Rijisha atelier.</p>
+            <span className="section-eyebrow">{STRINGS.home.featuredEyebrow}</span>
+            <h2>{STRINGS.home.featuredTitle}</h2>
+            <p>{STRINGS.home.featuredText}</p>
           </div>
           {error && <p className="form-error center">{error}</p>}
           {loading ? (
-            <Loader label="Bringing out the bestsellers…" />
+            <Loader label={STRINGS.home.featuredLoader} />
           ) : (
             <div className="grid">
               {featured.map((p) => <ProductCard key={p._id} product={p} />)}
             </div>
           )}
           <div className="center-cta">
-            <Link to="/shop" className="btn btn-ghost">View All Pieces</Link>
+            <Link to="/shop" className="btn btn-ghost">{STRINGS.home.viewAll}</Link>
           </div>
         </div>
       </section>
@@ -139,19 +141,19 @@ export default function Home() {
         <div className="container promises-inner">
           <div className="promise">
             <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" /><path d="m9 12 2 2 4-4" /></svg></span>
-            <div><b>925 Sterling Silver</b><span>BIS hallmarked purity</span></div>
+            <div><b>{STRINGS.home.promises[0].title}</b><span>{STRINGS.home.promises[0].sub}</span></div>
           </div>
           <div className="promise">
             <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 7h13v10H3zM16 10h4l1 3v4h-5" /><circle cx="7" cy="19" r="1.8" /><circle cx="18" cy="19" r="1.8" /></svg></span>
-            <div><b>Free Shipping</b><span>On orders above ₹2,999</span></div>
+            <div><b>{STRINGS.home.promises[1].title}</b><span>{STRINGS.home.promises[1].sub}</span></div>
           </div>
           <div className="promise">
             <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg></span>
-            <div><b>15-Day Easy Returns</b><span>No questions asked</span></div>
+            <div><b>{STRINGS.home.promises[2].title}</b><span>{STRINGS.home.promises[2].sub}</span></div>
           </div>
           <div className="promise">
             <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 3l2.5 5.3 5.5.8-4 4 1 5.9-5-2.8-5 2.8 1-5.9-4-4 5.5-.8L12 3Z" /></svg></span>
-            <div><b>Anti-Tarnish Finish</b><span>Shine that stays</span></div>
+            <div><b>{STRINGS.home.promises[3].title}</b><span>{STRINGS.home.promises[3].sub}</span></div>
           </div>
         </div>
       </section>
@@ -166,16 +168,16 @@ export default function Home() {
             {/* <div className="story-badge">Since<br /><b>2012</b></div> */}
           </div>
           <div className="story-text">
-            <span className="section-eyebrow">Our Story</span>
-            <h2>Crafted by Hand,<br />Cherished for Generations</h2>
-            <p>Rijisha Jewellers began as a small family atelier with one belief — that silver is not just a metal, but a memory in the making. Every piece we create carries the warmth of the hands that shaped it.</p>
-            <p>Today, our master artisans blend traditional Indian karigari with contemporary design, creating earrings and necklaces that feel as personal as they look precious.</p>
+            <span className="section-eyebrow">{STRINGS.home.storyEyebrow}</span>
+            <h2>{STRINGS.home.storyTitle}</h2>
+            <p>{STRINGS.home.storyText1}</p>
+            <p>{STRINGS.home.storyText2}</p>
             <ul className="story-points">
-              <li><span className="tick">✓</span> Handcrafted by third-generation silversmiths</li>
-              <li><span className="tick">✓</span> Ethically sourced, 92.5% pure sterling silver</li>
-              <li><span className="tick">✓</span> Every piece BIS hallmarked &amp; quality checked</li>
+              {STRINGS.home.storyPoints.map((point) => (
+                <li key={point}><span className="tick">✓</span> {point}</li>
+              ))}
             </ul>
-            <Link to="/shop" className="btn btn-dark">Explore the Craft</Link>
+            <Link to="/shop" className="btn btn-dark">{STRINGS.home.storyCta}</Link>
           </div>
         </div>
       </section>
@@ -184,35 +186,21 @@ export default function Home() {
       <section className="section testimonials">
         <div className="container">
           <div className="section-head">
-            <span className="section-eyebrow">Words of Love</span>
-            <h2>What Our Customers Say</h2>
-            <p>Over 5,000 happy customers across India trust Rijisha for their silver moments.</p>
+            <span className="section-eyebrow">{STRINGS.home.testimonialsEyebrow}</span>
+            <h2>{STRINGS.home.testimonialsTitle}</h2>
+            <p>{STRINGS.home.testimonialsText}</p>
           </div>
           <div className="t-grid">
-            <div className="t-card">
-              <div className="stars">★★★★★</div>
-              <p>"The Meera Jhumkas are even more beautiful in person. The finish is flawless and they're so light I forget I'm wearing them."</p>
-              <div className="t-who">
-                <span className="t-avatar">AS</span>
-                <div><b>Ananya Sharma</b><span>Mumbai</span></div>
+            {STRINGS.home.testimonials.map((t) => (
+              <div className="t-card" key={t.name}>
+                <div className="stars">★★★★★</div>
+                <p>{t.quote}</p>
+                <div className="t-who">
+                  <span className="t-avatar">{t.initials}</span>
+                  <div><b>{t.name}</b><span>{t.city}</span></div>
+                </div>
               </div>
-            </div>
-            <div className="t-card">
-              <div className="stars">★★★★★</div>
-              <p>"Bought the Tara layered necklace for my sister's wedding. Everyone asked where it was from. Packaging felt like a gift itself!"</p>
-              <div className="t-who">
-                <span className="t-avatar">PR</span>
-                <div><b>Priya Raghavan</b><span>Bengaluru</span></div>
-              </div>
-            </div>
-            <div className="t-card">
-              <div className="stars">★★★★★</div>
-              <p>"Six months of daily wear and my hoops still shine like day one. The anti-tarnish coating truly works. Fully worth it."</p>
-              <div className="t-who">
-                <span className="t-avatar">MK</span>
-                <div><b>Meghna Kapoor</b><span>Delhi</span></div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

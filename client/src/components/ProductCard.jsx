@@ -3,6 +3,8 @@ import JewelArt from './JewelArt';
 // import { useCart } from '../context/CartContext'; // cart disabled — buying happens on Etsy
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { MEDIA_TYPE, PRODUCT_TAG } from '../enums';
+import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
 export const ETSY_URL = 'https://rijishaajewels.etsy.com';
@@ -17,13 +19,13 @@ export default function ProductCard({ product }) {
   const onWish = async (e) => {
     e.preventDefault();
     if (!user) {
-      toast('Please log in to save to wishlist');
+      toast(STRINGS.common.loginToWishlist);
       navigate('/login');
       return;
     }
     try {
       const added = await toggleWishlist(product._id);
-      toast(added ? `♥ ${product.name} added to wishlist` : `${product.name} removed from wishlist`);
+      toast(added ? STRINGS.productCard.addedToWishlist(product.name) : STRINGS.productCard.removedFromWishlist(product.name));
     } catch (err) {
       toast(err.message);
     }
@@ -45,7 +47,7 @@ export default function ProductCard({ product }) {
     <Link to={`/product/${product.slug}`} className="product">
       <div className={`product-media ${product.bg}`}>
         {product.tag && (
-          <span className={`p-tag ${product.tag === 'New' || product.tag === 'Festive' ? 'gold' : ''}`}>
+          <span className={`p-tag ${product.tag === PRODUCT_TAG.NEW || product.tag === PRODUCT_TAG.FESTIVE ? 'gold' : ''}`}>
             {product.tag}
           </span>
         )}
@@ -55,16 +57,16 @@ export default function ProductCard({ product }) {
           </svg>
         </button>
         {(() => {
-          const first = product.media?.find((m) => m.type === 'image')
+          const first = product.media?.find((m) => m.type === MEDIA_TYPE.IMAGE)
             || product.media?.[0]
-            || (product.image ? { url: product.image, type: 'image' } : null);
+            || (product.image ? { url: product.image, type: MEDIA_TYPE.IMAGE } : null);
           if (!first) return <JewelArt art={product.art} />;
-          return first.type === 'video'
+          return first.type === MEDIA_TYPE.VIDEO
             ? <video className="product-photo" src={first.url} muted playsInline preload="metadata" />
             : <img className="product-photo" src={first.url} alt={product.name} loading="lazy" />;
         })()}
         {/* <button className="quick-add" onClick={onAdd}>Add to Bag</button> */}
-        <button className="quick-add" onClick={onEtsy}>Buy on Etsy</button>
+        <button className="quick-add" onClick={onEtsy}>{STRINGS.common.buyOnEtsy}</button>
       </div>
       <div className="product-info">
         <span className="product-cat">

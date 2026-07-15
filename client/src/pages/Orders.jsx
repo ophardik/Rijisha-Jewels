@@ -3,16 +3,10 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
+import { ORDER_STATUS_LABEL } from '../enums';
+import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
-
-const STATUS_LABEL = {
-  placed: 'Order Placed',
-  confirmed: 'Confirmed',
-  shipped: 'Shipped',
-  delivered: 'Delivered',
-  cancelled: 'Cancelled',
-};
 
 export default function Orders() {
   const { user, loading: authLoading } = useAuth();
@@ -30,8 +24,8 @@ export default function Orders() {
     return (
       <section className="section">
         <div className="container center empty-state">
-          <h2 className="serif">Log in to see your orders</h2>
-          <Link to="/login?next=/orders" className="btn btn-dark">Log In</Link>
+          <h2 className="serif">{STRINGS.orders.loginTitle}</h2>
+          <Link to="/login?next=/orders" className="btn btn-dark">{STRINGS.common.logIn}</Link>
         </div>
       </section>
     );
@@ -41,29 +35,29 @@ export default function Orders() {
     <section className="section">
       <div className="container narrow">
         <div className="section-head">
-          <span className="section-eyebrow">Your Account</span>
-          <h2>My Orders</h2>
+          <span className="section-eyebrow">{STRINGS.orders.eyebrow}</span>
+          <h2>{STRINGS.orders.title}</h2>
         </div>
 
         {error && <p className="form-error center">{error}</p>}
         {orders === null ? (
-          <Loader label="Fetching your orders…" />
+          <Loader label={STRINGS.orders.loader} />
         ) : orders.length === 0 ? (
           <div className="center empty-state">
-            <p className="muted">You haven't placed any orders yet.</p>
-            <Link to="/shop" className="btn btn-dark">Start Shopping</Link>
+            <p className="muted">{STRINGS.orders.empty}</p>
+            <Link to="/shop" className="btn btn-dark">{STRINGS.common.startShopping}</Link>
           </div>
         ) : (
           orders.map((order) => (
             <div className="order-card" key={order._id}>
               <div className="order-head">
                 <div>
-                  <b>Order #{order._id.slice(-8).toUpperCase()}</b>
+                  <b>{STRINGS.orders.orderNo(order._id.slice(-8).toUpperCase())}</b>
                   <span className="muted">
                     {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
-                <span className={`status status-${order.status}`}>{STATUS_LABEL[order.status]}</span>
+                <span className={`status status-${order.status}`}>{ORDER_STATUS_LABEL[order.status]}</span>
               </div>
               <ul className="order-items">
                 {order.items.map((item, i) => (
@@ -75,9 +69,9 @@ export default function Orders() {
               </ul>
               <div className="order-foot">
                 <span className="muted">
-                  {order.paymentMethod} · Ships to {order.shipping.city}, {order.shipping.state} {order.shipping.pincode}
+                  {STRINGS.orders.shipsTo(order.paymentMethod, order.shipping.city, order.shipping.state, order.shipping.pincode)}
                 </span>
-                <b>Total: {inr(order.grandTotal)}</b>
+                <b>{STRINGS.orders.total(inr(order.grandTotal))}</b>
               </div>
             </div>
           ))

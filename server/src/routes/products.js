@@ -5,10 +5,10 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import Product from '../models/Product.js';
 import { protect, adminOnly } from '../middleware/auth.js';
+import { CATEGORIES, CATEGORY_ALL, SORT, MEDIA_TYPE } from '../enums.js';
 
 const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CATEGORIES = ['earrings', 'necklaces', 'bracelets', 'antique'];
 
 // ---------- image upload ----------
 const uploadDir = path.join(__dirname, '..', '..', 'uploads');
@@ -44,7 +44,7 @@ const uploadMedia = (req, res, next) =>
 
 const fileToMedia = (file) => ({
   url: `/uploads/${file.filename}`,
-  type: VIDEO_RE.test(file.mimetype) ? 'video' : 'image',
+  type: VIDEO_RE.test(file.mimetype) ? MEDIA_TYPE.VIDEO : MEDIA_TYPE.IMAGE,
 });
 
 function uploadedMedia(req) {
@@ -60,7 +60,7 @@ function removeUploadFile(url) {
 
 // Keep product.image (card thumbnail) in sync: first photo, else first video
 function syncThumbnail(product) {
-  const first = product.media.find((m) => m.type === 'image') || product.media[0];
+  const first = product.media.find((m) => m.type === MEDIA_TYPE.IMAGE) || product.media[0];
   product.image = first ? first.url : '';
 }
 
@@ -99,14 +99,14 @@ router.get('/', async (req, res) => {
   try {
     const { category, search, sort } = req.query;
     const filter = {};
-    if (category && category !== 'all') filter.category = category;
+    if (category && category !== CATEGORY_ALL) filter.category = category;
     if (search) filter.name = { $regex: search, $options: 'i' };
 
     const sortMap = {
-      price_asc: { price: 1 },
-      price_desc: { price: -1 },
-      rating: { rating: -1, numReviews: -1 },
-      newest: { createdAt: -1 },
+      [SORT.PRICE_ASC]: { price: 1 },
+      [SORT.PRICE_DESC]: { price: -1 },
+      [SORT.RATING]: { rating: -1, numReviews: -1 },
+      [SORT.NEWEST]: { createdAt: -1 },
     };
 
     const products = await Product.find(filter).sort(sortMap[sort] || { createdAt: 1 });
@@ -177,7 +177,7 @@ router.put('/:id', protect, adminOnly, uploadMedia, async (req, res) => {
       // Legacy products may only have `image` — treat it as a one-item gallery
       const currentMedia = product.media.length
         ? product.media
-        : product.image ? [{ url: product.image, type: 'image' }] : [];
+        : product.image ? [{ url: product.image, type: MEDIA_TYPE.IMAGE }] : [];
       const keptUrls = new Set(kept.map((m) => m.url));
       for (const m of currentMedia) {
         if (!keptUrls.has(m.url)) removeUploadFile(m.url);
