@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
 import { PAYMENT_METHOD } from '../enums';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
@@ -12,6 +13,7 @@ const FREE_SHIPPING_ABOVE = 2999;
 const SHIPPING_FEE = 99;
 
 export default function Checkout() {
+  usePageTitle(STRINGS.titles.checkout);
   const { items, total, clear } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ export default function Checkout() {
         },
       });
       clear();
-      toast(STRINGS.checkout.orderPlaced);
+      toast(STRINGS.checkout.orderPlaced, 'success');
       navigate('/orders', { state: { justPlaced: order._id } });
     } catch (err) {
       setError(err.message);

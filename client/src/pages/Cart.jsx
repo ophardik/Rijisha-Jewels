@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import JewelArt from '../components/JewelArt';
 import { useCart } from '../context/CartContext';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
@@ -8,6 +9,7 @@ const FREE_SHIPPING_ABOVE = 2999;
 const SHIPPING_FEE = 99;
 
 export default function Cart() {
+  usePageTitle(STRINGS.titles.cart);
   const { items, setQty, remove, total } = useCart();
   const navigate = useNavigate();
 

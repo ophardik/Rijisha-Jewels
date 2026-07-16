@@ -17,6 +17,8 @@ import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
+import NotFound from './pages/NotFound';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
   const location = useLocation();
@@ -34,6 +36,7 @@ export default function App() {
       <SvgDefs />
       {!isAdminArea && <Header />}
       <main>
+        <div className="route-fade" key={location.pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
@@ -46,9 +49,12 @@ export default function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
+        </div>
       </main>
       {!isAdminArea && <Footer />}
+      {!isAdminArea && <WhatsAppButton />}
       <Toaster />
     </>
   );

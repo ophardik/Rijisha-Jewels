@@ -10,6 +10,7 @@ import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
 import wishlistRoutes from './routes/wishlist.js';
 import homeCollectionRoutes from './routes/homeCollections.js';
+import reviewRoutes from './routes/reviews.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/home-collections', homeCollectionRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 

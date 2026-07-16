@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import { toast } from '../toast';
 import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT, MEDIA_TYPE, PRODUCT_TAG } from '../enums';
 import { STRINGS } from '../strings';
+import { usePageTitle } from '../usePageTitle';
 
 const inr = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 
@@ -48,6 +49,7 @@ const EMPTY = {
 };
 
 export default function Admin() {
+  usePageTitle(STRINGS.titles.admin);
   const { user, loading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -135,10 +137,10 @@ export default function Admin() {
 
       if (editingId) {
         await api(`/products/${editingId}`, { method: 'PUT', body: data });
-        toast(STRINGS.admin.productUpdated);
+        toast(STRINGS.admin.productUpdated, 'success');
       } else {
         await api('/products', { method: 'POST', body: data });
-        toast(STRINGS.admin.productAdded);
+        toast(STRINGS.admin.productAdded, 'success');
       }
       resetForm();
       load();
@@ -153,11 +155,11 @@ export default function Admin() {
     if (!window.confirm(STRINGS.admin.confirmDelete(p.name))) return;
     try {
       await api(`/products/${p._id}`, { method: 'DELETE' });
-      toast(STRINGS.admin.productDeleted(p.name));
+      toast(STRINGS.admin.productDeleted(p.name), 'success');
       if (editingId === p._id) resetForm();
       load();
     } catch (err) {
-      toast(err.message);
+      toast(err.message, 'error');
     }
   };
 
@@ -171,9 +173,9 @@ export default function Admin() {
       data.append('image', file);
       const res = await api(`/home-collections/${key}`, { method: 'PUT', body: data });
       setCollectionImages((prev) => ({ ...prev, [key]: res.image }));
-      toast(key === HERO_SLOT ? STRINGS.admin.heroUpdated : STRINGS.admin.photoUpdated);
+      toast(key === HERO_SLOT ? STRINGS.admin.heroUpdated : STRINGS.admin.photoUpdated, 'success');
     } catch (err) {
-      toast(err.message);
+      toast(err.message, 'error');
     } finally {
       setCollectionBusy('');
     }
@@ -188,9 +190,9 @@ export default function Admin() {
         delete next[key];
         return next;
       });
-      toast(key === HERO_SLOT ? STRINGS.admin.heroReset : STRINGS.admin.cardReset);
+      toast(key === HERO_SLOT ? STRINGS.admin.heroReset : STRINGS.admin.cardReset, 'success');
     } catch (err) {
-      toast(err.message);
+      toast(err.message, 'error');
     } finally {
       setCollectionBusy('');
     }

@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
+import SkeletonGrid from '../components/SkeletonGrid';
+import { usePageTitle } from '../usePageTitle';
 import { CATEGORY, CATEGORY_LABEL, CATEGORY_ALL, SORT } from '../enums';
 import { STRINGS } from '../strings';
 
 export default function Shop() {
+  usePageTitle(STRINGS.titles.shop);
   const [params, setParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,7 +98,7 @@ export default function Shop() {
             <button className="btn btn-ghost" onClick={() => update('category', CATEGORY_ALL)}>{STRINGS.shop.browseOther}</button>
           </div>
         ) : loading ? (
-          <Loader label={STRINGS.shop.loader} />
+          <SkeletonGrid />
         ) : products.length === 0 ? (
           <p className="muted center">{STRINGS.shop.noMatch}</p>
         ) : (

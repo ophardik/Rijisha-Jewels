@@ -4,11 +4,13 @@ import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
 import { ORDER_STATUS_LABEL } from '../enums';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
 
 export default function Orders() {
+  usePageTitle(STRINGS.titles.orders);
   const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState(null);
   const [error, setError] = useState('');

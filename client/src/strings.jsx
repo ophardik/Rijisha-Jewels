@@ -5,6 +5,7 @@ import { CATEGORY } from './enums';
 // functions that take the values they interpolate.
 export const STRINGS = {
   common: {
+    brand: 'Rijisha Jewellers',
     logIn: 'Log In',
     startShopping: 'Start Shopping',
     orderSummary: 'Order Summary',
@@ -19,7 +20,11 @@ export const STRINGS = {
   },
 
   header: {
-    announcement: 'Currently We accept ordrs from etsy only;',
+    announcements: [
+      'Currently We accept orders from etsy only;',
+      'Free shipping on orders above ₹2,999',
+      '15-day easy returns · BIS hallmarked 925 silver',
+    ],
     logoAlt: 'Rijisha Atelier — Handcrafted Elegance, Timelessly Yours',
     navHome: 'Home',
     navShop: 'Shop',
@@ -93,6 +98,11 @@ export const STRINGS = {
     testimonialsEyebrow: 'Words of Love',
     testimonialsTitle: 'What Our Customers Say',
     testimonialsText: 'Over 5,000 happy customers across India trust Rijisha for their silver moments.',
+    testimonialsVia: 'via Etsy',
+    instaEyebrow: 'On Instagram',
+    instaTitle: 'As Worn By You',
+    instaText: 'Tag @rijishaajewels to be featured — we love seeing our silver out in the world.',
+    instaCta: 'Follow @rijishaajewels',
     testimonials: [
       {
         quote: '"The Meera Jhumkas are even more beautiful in person. The finish is flawless and they\'re so light I forget I\'m wearing them."',
@@ -135,7 +145,7 @@ export const STRINGS = {
   },
 
   productCard: {
-    addedToWishlist: (name) => `♥ ${name} added to wishlist`,
+    addedToWishlist: (name) => `${name} added to wishlist`,
     removedFromWishlist: (name) => `${name} removed from wishlist`,
   },
 
@@ -144,6 +154,7 @@ export const STRINGS = {
     loader: 'Unveiling this piece…',
     crumbHome: 'Home',
     reviews: (rating, count) => `${rating} · ${count} reviews`,
+    noReviews: 'No reviews yet',
     discountOff: (pct) => `${pct}% off`,
     taxNote: 'Inclusive of all taxes · Free shipping above ₹2,999',
     points: [
@@ -154,8 +165,40 @@ export const STRINGS = {
     onlyLeft: (n) => `Only ${n} left in stock`,
     inStock: 'In stock',
     outOfStock: 'Out of stock',
-    addedToWishlist: '♥ Added to wishlist',
+    addedToWishlist: 'Added to wishlist',
     removedFromWishlist: 'Removed from wishlist',
+    relatedEyebrow: 'Complete the Look',
+    relatedTitle: 'You May Also Like',
+    recentEyebrow: 'Pick Up Where You Left Off',
+    recentTitle: 'Recently Viewed',
+  },
+
+  reviews: {
+    eyebrow: 'From Our Customers',
+    title: 'Ratings & Reviews',
+    loader: 'Gathering customer stories…',
+    empty: 'No reviews yet — be the first to share how this piece looks on you.',
+    basedOn: (n) => `Based on ${n} review${n === 1 ? '' : 's'}`,
+    writeTitle: 'Write a Review',
+    yourRating: 'Your rating',
+    ratingWords: ['', 'Poor', 'Fair', 'Good', 'Very good', 'Excellent'],
+    commentLabel: 'Your review',
+    commentPlaceholder: 'How is the shine, the finish, the fit? Share your experience…',
+    photosLabel: 'Add photos (optional)',
+    addPhotos: 'Add photos',
+    photosHint: 'Up to 4 photos · JPG, PNG or WebP',
+    maxPhotos: 'You can add up to 4 photos',
+    removePhoto: 'Remove photo',
+    submit: 'Post Review',
+    submitting: 'Posting…',
+    loginPrompt: 'Log in to review this piece',
+    alreadyReviewed: 'You have already reviewed this piece — thank you!',
+    posted: 'Thank you! Your review is live',
+    deleted: 'Your review was removed',
+    delete: 'Delete',
+    youBadge: 'You',
+    pickRating: 'Please pick a star rating',
+    photoAlt: (name) => `Customer photo by ${name}`,
   },
 
   cart: {
@@ -194,7 +237,7 @@ export const STRINGS = {
     upiText: 'Pay on delivery via UPI',
     placing: 'Placing Order…',
     placeOrder: (amount) => `Place Order · ${amount}`,
-    orderPlaced: '✓ Order placed successfully!',
+    orderPlaced: 'Order placed successfully!',
   },
 
   orders: {
@@ -309,13 +352,40 @@ export const STRINGS = {
     edit: 'Edit',
     delete: 'Delete',
     confirmDelete: (name) => `Delete "${name}"? This cannot be undone.`,
-    productUpdated: '✓ Product updated',
-    productAdded: '✓ Product added — it is live on the shop now',
+    productUpdated: 'Product updated',
+    productAdded: 'Product added — it is live on the shop now',
     productDeleted: (name) => `${name} deleted`,
-    heroUpdated: '✓ Hero video updated — it is live on the home page',
-    photoUpdated: '✓ Collection photo updated — it is live on the home page',
+    heroUpdated: 'Hero video updated — it is live on the home page',
+    photoUpdated: 'Collection photo updated — it is live on the home page',
     heroReset: 'Hero is back to the default video',
     cardReset: 'Card is back to its default illustration',
     loggedOut: 'Logged out of the admin panel',
+  },
+
+  whatsapp: {
+    aria: 'Chat with us on WhatsApp',
+    message: 'Hi Rijisha Jewellers! I have a question about your silver jewellery.',
+  },
+
+  notFound: {
+    eyebrow: '404',
+    title: 'This page has slipped off the chain',
+    text: 'The page you are looking for does not exist or has been moved — but the silver is right where you left it.',
+    home: 'Back to Home',
+    shop: 'Browse the Shop',
+  },
+
+  titles: {
+    home: 'Handcrafted 925 Silver Jewellery',
+    shop: 'Shop Silver Jewellery',
+    wishlist: 'My Wishlist',
+    cart: 'Shopping Bag',
+    checkout: 'Checkout',
+    orders: 'My Orders',
+    login: 'Log In',
+    register: 'Create Account',
+    adminLogin: 'Admin Login',
+    admin: 'Admin Panel',
+    notFound: 'Page Not Found',
   },
 };

@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import JewelArt from '../components/JewelArt';
 import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
+import SkeletonGrid from '../components/SkeletonGrid';
+import Reveal from '../components/Reveal';
+import InstaStrip from '../components/InstaStrip';
+import { usePageTitle } from '../usePageTitle';
 import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT } from '../enums';
 import { STRINGS } from '../strings';
 
@@ -15,6 +18,7 @@ const COLLECTIONS = [
 ].map((c) => ({ ...c, title: CATEGORY_LABEL[c.key], sub: STRINGS.home.collectionSub[c.key] }));
 
 export default function Home() {
+  usePageTitle(STRINGS.titles.home);
   const [products, setProducts] = useState([]);
   const [collectionImages, setCollectionImages] = useState({});
   const [loading, setLoading] = useState(true);
@@ -78,57 +82,65 @@ export default function Home() {
       {/* Collections */}
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <span className="section-eyebrow">{STRINGS.home.collectionsEyebrow}</span>
-            <h2>{STRINGS.home.collectionsTitle}</h2>
-            <p>{STRINGS.home.collectionsText}</p>
-          </div>
-          <div className="cats">
-            {COLLECTIONS.map((c) => {
-              const CardTag = c.comingSoon ? 'div' : Link;
-              return (
-                <CardTag
-                  {...(c.comingSoon ? {} : { to: `/shop?category=${c.key}` })}
-                  className={`cat-card cat-${c.key} ${collectionImages[c.key] ? 'has-photo' : ''} ${c.comingSoon ? 'cat-soon' : ''}`}
-                  key={c.key}
-                >
-                  {c.comingSoon && <span className="cat-soon-badge">{STRINGS.home.comingSoonBadge}</span>}
-                  {collectionImages[c.key]
-                    ? <img src={collectionImages[c.key]} alt={STRINGS.home.collectionAlt(c.title)} className="cat-photo" />
-                    : <JewelArt art={c.art} />}
-                  <div className="cat-label">
-                    <div>
-                      <h3>{c.title}</h3>
-                      <span>{c.comingSoon ? STRINGS.home.comingSoonSub : c.sub}</span>
+          <Reveal>
+            <div className="section-head">
+              <span className="section-eyebrow">{STRINGS.home.collectionsEyebrow}</span>
+              <h2>{STRINGS.home.collectionsTitle}</h2>
+              <p>{STRINGS.home.collectionsText}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="cats">
+              {COLLECTIONS.map((c) => {
+                const CardTag = c.comingSoon ? 'div' : Link;
+                return (
+                  <CardTag
+                    {...(c.comingSoon ? {} : { to: `/shop?category=${c.key}` })}
+                    className={`cat-card cat-${c.key} ${collectionImages[c.key] ? 'has-photo' : ''} ${c.comingSoon ? 'cat-soon' : ''}`}
+                    key={c.key}
+                  >
+                    {c.comingSoon && <span className="cat-soon-badge">{STRINGS.home.comingSoonBadge}</span>}
+                    {collectionImages[c.key]
+                      ? <img src={collectionImages[c.key]} alt={STRINGS.home.collectionAlt(c.title)} className="cat-photo" loading="lazy" />
+                      : <JewelArt art={c.art} />}
+                    <div className="cat-label">
+                      <div>
+                        <h3>{c.title}</h3>
+                        <span>{c.comingSoon ? STRINGS.home.comingSoonSub : c.sub}</span>
+                      </div>
+                      {!c.comingSoon && (
+                        <span className="cat-arrow">
+                          <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+                        </span>
+                      )}
                     </div>
-                    {!c.comingSoon && (
-                      <span className="cat-arrow">
-                        <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
-                      </span>
-                    )}
-                  </div>
-                </CardTag>
-              );
-            })}
-          </div>
+                  </CardTag>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Featured */}
       <section className="section shop-band">
         <div className="container">
-          <div className="section-head">
-            <span className="section-eyebrow">{STRINGS.home.featuredEyebrow}</span>
-            <h2>{STRINGS.home.featuredTitle}</h2>
-            <p>{STRINGS.home.featuredText}</p>
-          </div>
+          <Reveal>
+            <div className="section-head">
+              <span className="section-eyebrow">{STRINGS.home.featuredEyebrow}</span>
+              <h2>{STRINGS.home.featuredTitle}</h2>
+              <p>{STRINGS.home.featuredText}</p>
+            </div>
+          </Reveal>
           {error && <p className="form-error center">{error}</p>}
           {loading ? (
-            <Loader label={STRINGS.home.featuredLoader} />
+            <SkeletonGrid count={4} />
           ) : (
-            <div className="grid">
-              {featured.map((p) => <ProductCard key={p._id} product={p} />)}
-            </div>
+            <Reveal delay={100}>
+              <div className="grid">
+                {featured.map((p) => <ProductCard key={p._id} product={p} />)}
+              </div>
+            </Reveal>
           )}
           <div className="center-cta">
             <Link to="/shop" className="btn btn-ghost">{STRINGS.home.viewAll}</Link>
@@ -160,6 +172,7 @@ export default function Home() {
 
       {/* Story */}
       <section className="section" id="story">
+        <Reveal>
         <div className="container story-inner">
           <div className="story-visual">
             <div className="story-frame">
@@ -180,30 +193,38 @@ export default function Home() {
             <Link to="/shop" className="btn btn-dark">{STRINGS.home.storyCta}</Link>
           </div>
         </div>
+        </Reveal>
       </section>
 
       {/* Testimonials */}
       <section className="section testimonials">
         <div className="container">
-          <div className="section-head">
-            <span className="section-eyebrow">{STRINGS.home.testimonialsEyebrow}</span>
-            <h2>{STRINGS.home.testimonialsTitle}</h2>
-            <p>{STRINGS.home.testimonialsText}</p>
-          </div>
-          <div className="t-grid">
-            {STRINGS.home.testimonials.map((t) => (
-              <div className="t-card" key={t.name}>
-                <div className="stars">★★★★★</div>
-                <p>{t.quote}</p>
-                <div className="t-who">
-                  <span className="t-avatar">{t.initials}</span>
-                  <div><b>{t.name}</b><span>{t.city}</span></div>
+          <Reveal>
+            <div className="section-head">
+              <span className="section-eyebrow">{STRINGS.home.testimonialsEyebrow}</span>
+              <h2>{STRINGS.home.testimonialsTitle}</h2>
+              <p>{STRINGS.home.testimonialsText}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="t-grid">
+              {STRINGS.home.testimonials.map((t) => (
+                <div className="t-card" key={t.name}>
+                  <div className="stars">★★★★★ <em className="t-via">{STRINGS.home.testimonialsVia}</em></div>
+                  <p>{t.quote}</p>
+                  <div className="t-who">
+                    <span className="t-avatar">{t.initials}</span>
+                    <div><b>{t.name}</b><span>{t.city}</span></div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
+
+      {/* Instagram strip */}
+      <InstaStrip products={products} />
     </>
   );
 }

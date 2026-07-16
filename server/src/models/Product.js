@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     }, // gallery: all photos & videos of the product
     art: { type: String, default: 'pendant' }, // fallback SVG illustration key on the client
     bg: { type: String, default: 'bg-a' }, // card background style
-    rating: { type: Number, default: 4.8 },
+    rating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },
     stock: { type: Number, default: 25 },
   },

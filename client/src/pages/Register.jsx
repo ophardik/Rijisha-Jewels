@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 export default function Register() {
+  usePageTitle(STRINGS.titles.register);
   const { register } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -20,7 +22,7 @@ export default function Register() {
     setBusy(true);
     try {
       const user = await register(name, email, password);
-      toast(STRINGS.register.welcome(user.name.split(' ')[0]));
+      toast(STRINGS.register.welcome(user.name.split(' ')[0]), 'success');
       navigate(params.get('next') || '/');
     } catch (err) {
       setError(err.message);

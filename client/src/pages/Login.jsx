@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 export default function Login() {
+  usePageTitle(STRINGS.titles.login);
   const { login } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -19,7 +21,7 @@ export default function Login() {
     setBusy(true);
     try {
       const user = await login(email, password);
-      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]));
+      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]), 'success');
       navigate(params.get('next') || '/');
     } catch (err) {
       setError(err.message);

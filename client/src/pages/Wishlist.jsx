@@ -4,9 +4,11 @@ import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 export default function Wishlist() {
+  usePageTitle(STRINGS.titles.wishlist);
   const { user, wishlist, loading: authLoading } = useAuth();
   const [products, setProducts] = useState(null);
   const [error, setError] = useState('');

@@ -9,6 +9,7 @@ import { STRINGS } from '../strings';
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [announceIdx, setAnnounceIdx] = useState(0);
   // const { count } = useCart(); // cart disabled
   const { user, wishlist, logout } = useAuth();
   const navigate = useNavigate();
@@ -31,6 +32,14 @@ export default function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // Rotate the announcement bar messages
+  useEffect(() => {
+    const count = STRINGS.header.announcements.length;
+    if (count < 2) return undefined;
+    const id = setInterval(() => setAnnounceIdx((i) => (i + 1) % count), 4500);
+    return () => clearInterval(id);
+  }, []);
+
   const close = () => setMenuOpen(false);
 
   const onLogout = () => {
@@ -42,7 +51,7 @@ export default function Header() {
   return (
     <>
       <div className="announce">
-        {STRINGS.header.announcement}
+        <span className="announce-msg" key={announceIdx}>{STRINGS.header.announcements[announceIdx]}</span>
       </div>
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container header-inner">

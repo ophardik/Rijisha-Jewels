@@ -3,9 +3,11 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
 import { toast } from '../toast';
+import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
 
 export default function AdminLogin() {
+  usePageTitle(STRINGS.titles.adminLogin);
   const { adminLogin, user, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -19,7 +21,7 @@ export default function AdminLogin() {
     setBusy(true);
     try {
       const user = await adminLogin(email, password);
-      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]));
+      toast(STRINGS.common.welcomeBack(user.name.split(' ')[0]), 'success');
       navigate('/');
     } catch (err) {
       setError(err.message);
