@@ -1,0 +1,36 @@
+# Render deployment for rijisha.in
+#
+# One web service runs the API and serves the built storefront from the same
+# origin, so the browser never makes a cross-origin request.
+#
+# Values marked "sync: false" are NOT stored here — set them in the Render
+# dashboard under Environment. Never commit secrets to this file.
+
+services:
+  - type: web
+    name: rijisha
+    runtime: node
+    plan: free # switch to "starter" before promoting the shop — free sleeps after 15 min idle
+    region: singapore # closest to customers in India
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Atlas connection string — must point at the PRODUCTION database,
+      # not the one local development writes to.
+      - key: MONGO_URI
+        sync: false
+
+      # Generated once by Render. Changing it logs every customer out.
+      - key: JWT_SECRET
+        generateValue: true
+
+      # Admin panel login. No defaults exist in the code, so the server will
+      # refuse to boot until these are set.
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -72,6 +72,7 @@ export default function Header() {
               ))}
               {/* Orders disabled for now — ordering happens on Etsy
               {user && <li><NavLink to="/orders" onClick={close}>My Orders</NavLink></li>} */}
+              {user && !user.isAdmin && <li><NavLink to="/rewards" onClick={close}>{STRINGS.header.navRewards}</NavLink></li>}
               {user?.isAdmin && <li><NavLink to="/admin" onClick={close} className="admin-link">{STRINGS.header.navAdmin}</NavLink></li>}
             </ul>
           </nav>

@@ -3,33 +3,43 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 import Review from '../models/Review.js';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/auth.js';
+import { uploadDir } from '../config.js';
 
 const router = Router();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ---------- customer photo upload ----------
-const uploadDir = path.join(__dirname, '..', '..', 'uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
+
+// The extension we save under decides the Content-Type express.static sends
+// back, so it can only ever come from this list — never from the uploader.
+const IMAGE_EXT = {
+  'image/jpeg': '.jpg',
+  'image/jpg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+  'image/avif': '.avif',
+};
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    const safe = file.originalname.replace(/[^a-zA-Z0-9.]+/g, '-').toLowerCase();
-    cb(null, `review-${Date.now()}-${safe}`);
+    // Discard originalname entirely: 'photo.html' sent with an image
+    // Content-Type would otherwise be served back as HTML from our own origin.
+    const ext = IMAGE_EXT[file.mimetype];
+    cb(null, `review-${Date.now()}-${crypto.randomBytes(8).toString('hex')}${ext}`);
   },
 });
-
-const IMAGE_RE = /^image\/(jpe?g|png|webp|gif|avif)$/;
 
 const upload = multer({
   storage,
   limits: { fileSize: 8 * 1024 * 1024, files: 4 },
   fileFilter: (req, file, cb) => {
-    if (IMAGE_RE.test(file.mimetype)) cb(null, true);
+    if (IMAGE_EXT[file.mimetype]) cb(null, true);
     else cb(new Error('Only photos (jpg, png, webp, gif, avif) are allowed'));
   },
 });

@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import JewelArt from '../components/JewelArt';
+import AdminRewards from '../components/AdminRewards';
 import Loader from '../components/Loader';
 import { toast } from '../toast';
 import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT, MEDIA_TYPE, PRODUCT_TAG } from '../enums';
@@ -27,6 +28,14 @@ const ART_OPTIONS = [
 ];
 
 const BG_OPTIONS = ['bg-a', 'bg-b', 'bg-c', 'bg-d'];
+
+const PER_PAGE = 12; // products shown per page in the admin table
+
+const TABS = [
+  { key: 'products', label: STRINGS.admin.tabProducts },
+  { key: 'homepage', label: STRINGS.admin.tabHomepage },
+  { key: 'rewards', label: STRINGS.admin.tabRewards },
+];
 
 const COLLECTIONS = [
   { key: CATEGORY.EARRINGS, label: CATEGORY_LABEL[CATEGORY.EARRINGS], art: 'earringsPair' },
@@ -61,6 +70,11 @@ export default function Admin() {
   const [error, setError] = useState('');
   const [collectionImages, setCollectionImages] = useState({});
   const [collectionBusy, setCollectionBusy] = useState('');
+  const [query, setQuery] = useState('');
+  const [filterCat, setFilterCat] = useState('all');
+  const [page, setPage] = useState(1);
+  const [tab, setTab] = useState('products');
+  const [showForm, setShowForm] = useState(false);
   const fileRef = useRef();
   const formRef = useRef();
 
@@ -71,6 +85,18 @@ export default function Admin() {
     load();
     api('/home-collections').then(setCollectionImages).catch(() => {});
   }, [isAdmin]);
+
+  // Search + category filter for the product table (client-side so it stays snappy)
+  useEffect(() => { setPage(1); }, [query, filterCat]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return products.filter((p) => {
+      if (filterCat !== 'all' && p.category !== filterCat) return false;
+      if (!q) return true;
+      return p.name.toLowerCase().includes(q) || (p.subCategory || '').toLowerCase().includes(q);
+    });
+  }, [products, query, filterCat]);
 
   if (authLoading) return <section className="section"><Loader /></section>;
 
@@ -101,7 +127,11 @@ export default function Admin() {
     if (fileRef.current) fileRef.current.value = '';
   };
 
+  const closeForm = () => { resetForm(); setShowForm(false); };
+  const openAddForm = () => { resetForm(); setShowForm(true); };
+
   const startEdit = (p) => {
+    setShowForm(true);
     setEditingId(p._id);
     setForm({
       name: p.name,
@@ -142,7 +172,7 @@ export default function Admin() {
         await api('/products', { method: 'POST', body: data });
         toast(STRINGS.admin.productAdded, 'success');
       }
-      resetForm();
+      closeForm();
       load();
     } catch (err) {
       setError(err.message);
@@ -204,6 +234,12 @@ export default function Admin() {
     navigate('/admin/login');
   };
 
+  // Pagination over the filtered list (page is clamped so deletes can't strand it)
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * PER_PAGE;
+  const paged = filtered.slice(pageStart, pageStart + PER_PAGE);
+
   return (
     <section className="section">
       <div className="container">
@@ -218,7 +254,23 @@ export default function Admin() {
           <p>{STRINGS.admin.subtitle}</p>
         </div>
 
+        <div className="admin-tabs" role="tablist">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              role="tab"
+              aria-selected={tab === t.key}
+              className={`admin-tab ${tab === t.key ? 'active' : ''}`}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
         {/* Homepage media: hero video + collection card images */}
+        {tab === 'homepage' && (
         <div className="admin-form collection-admin">
           <h3 className="serif">{STRINGS.admin.homepageMedia}</h3>
           <p className="muted collection-hint">{STRINGS.admin.homepageMediaHint}</p>
@@ -301,8 +353,22 @@ export default function Admin() {
             ))}
           </div>
         </div>
+        )}
+
+        {tab === 'products' && (
+        <>
+          <div className="admin-products-head">
+            <button
+              type="button"
+              className={showForm || editingId ? 'mini-btn' : 'btn btn-dark'}
+              onClick={() => (showForm || editingId ? closeForm() : openAddForm())}
+            >
+              {showForm || editingId ? STRINGS.admin.closeForm : STRINGS.admin.addProductBtn}
+            </button>
+          </div>
 
         {/* Add / edit form */}
+        {(showForm || editingId) && (
         <form className="admin-form" onSubmit={submit} ref={formRef}>
           <h3 className="serif">{editingId ? STRINGS.admin.editProduct : STRINGS.admin.addNewProduct}</h3>
           <div className="field-grid admin-grid">
@@ -426,55 +492,107 @@ export default function Admin() {
             )}
           </div>
         </form>
+        )}
 
         {/* Product table */}
         <div className="admin-table-wrap">
-          <h3 className="serif">{STRINGS.admin.allProducts(products.length)}</h3>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>{STRINGS.admin.thName}</th>
-                <th>{STRINGS.admin.thCategory}</th>
-                <th>{STRINGS.admin.thPrice}</th>
-                <th>{STRINGS.admin.thStock}</th>
-                <th>{STRINGS.admin.thTag}</th>
-                <th>{STRINGS.admin.thActions}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p._id}>
-                  <td>
-                    <div className={`table-thumb ${p.bg}`}>
-                      {(() => {
-                        const first = p.media?.[0] || (p.image ? { url: p.image, type: MEDIA_TYPE.IMAGE } : null);
-                        if (!first) return <JewelArt art={p.art} />;
-                        return first.type === MEDIA_TYPE.VIDEO
-                          ? <video src={first.url} className="product-photo" muted />
-                          : <img src={first.url} alt={p.name} className="product-photo" />;
-                      })()}
-                    </div>
-                  </td>
-                  <td>
-                    <Link to={`/product/${p.slug}`} className="table-name">{p.name}</Link>
-                    <span className="muted table-sub">{p.subCategory}</span>
-                  </td>
-                  <td className="cap">{p.category}</td>
-                  <td>{inr(p.price)}{p.mrp ? <s className="muted"> {inr(p.mrp)}</s> : null}</td>
-                  <td className={p.stock <= 5 ? 'low-stock' : ''}>{p.stock}</td>
-                  <td>{p.tag || STRINGS.admin.noTag}</td>
-                  <td>
-                    <div className="table-actions">
-                      <button className="mini-btn" onClick={() => startEdit(p)}>{STRINGS.admin.edit}</button>
-                      <button className="mini-btn danger" onClick={() => onDelete(p)}>{STRINGS.admin.delete}</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="admin-table-head">
+            <h3 className="serif">{STRINGS.admin.allProducts(products.length)}</h3>
+            <div className="admin-table-tools">
+              <div className="admin-search">
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={STRINGS.admin.productSearchPlaceholder}
+                  aria-label={STRINGS.admin.productSearchPlaceholder}
+                />
+                {query && (
+                  <button type="button" className="admin-search-clear" onClick={() => setQuery('')} aria-label={STRINGS.admin.clearSearch}>×</button>
+                )}
+              </div>
+              <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} aria-label={STRINGS.admin.filterAllCategories}>
+                <option value="all">{STRINGS.admin.filterAllCategories}</option>
+                {Object.values(CATEGORY).map((category) => (
+                  <option key={category} value={category}>{CATEGORY_LABEL[category]}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {filtered.length === 0 ? (
+            <p className="muted admin-empty">{STRINGS.admin.noProductsMatch}</p>
+          ) : (
+            <>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>{STRINGS.admin.thName}</th>
+                    <th>{STRINGS.admin.thCategory}</th>
+                    <th>{STRINGS.admin.thPrice}</th>
+                    <th>{STRINGS.admin.thStock}</th>
+                    <th>{STRINGS.admin.thTag}</th>
+                    <th>{STRINGS.admin.thActions}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paged.map((p) => (
+                    <tr key={p._id}>
+                      <td>
+                        <div className={`table-thumb ${p.bg}`}>
+                          {(() => {
+                            const first = p.media?.[0] || (p.image ? { url: p.image, type: MEDIA_TYPE.IMAGE } : null);
+                            if (!first) return <JewelArt art={p.art} />;
+                            return first.type === MEDIA_TYPE.VIDEO
+                              ? <video src={first.url} className="product-photo" muted />
+                              : <img src={first.url} alt={p.name} className="product-photo" />;
+                          })()}
+                        </div>
+                      </td>
+                      <td>
+                        <Link to={`/product/${p.slug}`} className="table-name">{p.name}</Link>
+                        <span className="muted table-sub">{p.subCategory}</span>
+                      </td>
+                      <td className="cap">{p.category}</td>
+                      <td>{inr(p.price)}{p.mrp ? <s className="muted"> {inr(p.mrp)}</s> : null}</td>
+                      <td className={p.stock <= 5 ? 'low-stock' : ''}>{p.stock}</td>
+                      <td>{p.tag || STRINGS.admin.noTag}</td>
+                      <td>
+                        <div className="table-actions">
+                          <button className="mini-btn" onClick={() => startEdit(p)}>{STRINGS.admin.edit}</button>
+                          <button className="mini-btn danger" onClick={() => onDelete(p)}>{STRINGS.admin.delete}</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="admin-pagination">
+                <span className="muted">
+                  {STRINGS.admin.showingCount(pageStart + 1, pageStart + paged.length, filtered.length)}
+                </span>
+                {totalPages > 1 && (
+                  <div className="admin-pager">
+                    <button className="mini-btn" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}>
+                      {STRINGS.admin.prevPage}
+                    </button>
+                    <span className="admin-page-of">{STRINGS.admin.pageOf(currentPage, totalPages)}</span>
+                    <button className="mini-btn" disabled={currentPage >= totalPages} onClick={() => setPage(currentPage + 1)}>
+                      {STRINGS.admin.nextPage}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
+        </>
+        )}
+
+        {/* Review rewards: verify Etsy orders and hand out discount codes */}
+        {tab === 'rewards' && <AdminRewards />}
       </div>
     </section>
   );

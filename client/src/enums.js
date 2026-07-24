@@ -60,3 +60,19 @@ export const PRODUCT_TAG = {
   FESTIVE: 'Festive',
   SALE: 'Sale',
 };
+
+// Photo-review reward for repeat Etsy purchases — keep in sync with server enums.
+export const REWARD_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+};
+
+export const REWARD_STATUS_LABEL = {
+  [REWARD_STATUS.PENDING]: 'Pending verification',
+  [REWARD_STATUS.APPROVED]: 'Approved',
+  [REWARD_STATUS.REJECTED]: 'Not verified',
+};
+
+// Percentage off the next Etsy order for a verified photo review
+export const REVIEW_REWARD_PERCENT = 15;

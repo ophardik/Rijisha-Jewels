@@ -24,7 +24,7 @@ export default function ProductCard({ product }) {
   const media = product.media?.length
     ? product.media
     : product.image ? [{ url: product.image, type: MEDIA_TYPE.IMAGE }] : [];
-  const primary = media.find((m) => m.type === MEDIA_TYPE.IMAGE) || media[0] || null;
+const primary = media.find((m) => m.type === MEDIA_TYPE.IMAGE) || media[0] || null;
   const alt = media.find((m) => m.url !== primary?.url) || null;
 
   const onWish = async (e) => {

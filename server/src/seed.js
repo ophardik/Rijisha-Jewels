@@ -1,6 +1,7 @@
 import Product from './models/Product.js';
 import User from './models/User.js';
 import { CATEGORY, PRODUCT_TAG } from './enums.js';
+import { isProduction } from './config.js';
 
 const products = [
   {
@@ -216,21 +217,32 @@ export async function seedProducts() {
 }
 
 async function seedAdmin() {
-  const email = (process.env.ADMIN_EMAIL || 'admin@rijisha.com').toLowerCase();
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+
+  // No defaults: a fallback email/password here would be public in the repo, and
+  // anyone could log in as admin on a deploy that forgot to set these.
+  if (!email || !password) {
+    if (isProduction) {
+      throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be set in production');
+    }
+    console.warn('ADMIN_EMAIL / ADMIN_PASSWORD not set — no admin account seeded');
+    return;
+  }
+
   const existing = await User.findOne({ email });
   if (existing) {
+    // Never grant isAdmin to an account we didn't create. Promoting on startup
+    // would let anyone register this email and become admin on the next restart.
     if (!existing.isAdmin) {
-      existing.isAdmin = true;
-      await existing.save();
-      console.log(`Promoted ${email} to admin`);
+      console.warn(
+        `ADMIN_EMAIL ${email} belongs to a non-admin account — refusing to promote it. ` +
+          'Grant admin in the database by hand if this is genuinely your account.'
+      );
     }
     return;
   }
-  await User.create({
-    name: 'Rijisha Admin',
-    email,
-    password: process.env.ADMIN_PASSWORD || 'admin123',
-    isAdmin: true,
-  });
+
+  await User.create({ name: 'Rijisha Admin', email, password, isAdmin: true });
   console.log(`Created admin account: ${email}`);
 }

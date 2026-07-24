@@ -4,6 +4,7 @@ import fs from 'fs';
 import dns from 'dns';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
+import { isProduction } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,13 +13,25 @@ export async function connectDB() {
 
   if (uri) {
     // mongodb+srv:// needs DNS SRV lookups, which many home routers mangle
-    // (querySrv ECONNREFUSED) — resolve via public DNS instead.
-    if (uri.startsWith('mongodb+srv://')) {
+    // (querySrv ECONNREFUSED) — resolve via public DNS instead. Hosting
+    // providers have working resolvers, and overriding theirs can break
+    // private networking, so this stays a development-only workaround.
+    if (!isProduction && uri.startsWith('mongodb+srv://')) {
       dns.setServers(['8.8.8.8', '1.1.1.1']);
     }
     await mongoose.connect(uri);
     console.log(`MongoDB connected: ${mongoose.connection.host}`);
     return;
+  }
+
+  // Falling back to a throwaway database in production would look like a
+  // successful deploy while every order and signup vanished on the next
+  // restart. Fail loudly instead.
+  if (isProduction) {
+    throw new Error(
+      'MONGO_URI is not set. Refusing to start in production with an embedded database — ' +
+        'set MONGO_URI to your MongoDB Atlas connection string.'
+    );
   }
 
   // No MONGO_URI configured — run an embedded MongoDB that persists its

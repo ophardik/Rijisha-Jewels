@@ -7,9 +7,11 @@ import Reveal from './Reveal';
 import Loader from './Loader';
 import Stars from './Stars';
 import { STRINGS } from '../strings';
+import { REWARD_STATUS, REVIEW_REWARD_PERCENT } from '../enums';
 
 const S = STRINGS.reviews;
 const MAX_PHOTOS = 4;
+const PCT = REVIEW_REWARD_PERCENT;
 
 const fmtDate = (iso) =>
   new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -24,14 +26,32 @@ export default function Reviews({ product, onChange }) {
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState('');
   const [photos, setPhotos] = useState([]); // { file, url }
+  const [etsyOrderNo, setEtsyOrderNo] = useState('');
   const [busy, setBusy] = useState(false);
   const [lightbox, setLightbox] = useState(null); // photo url
+  const [myReward, setMyReward] = useState(null); // reward tied to my review, if any
+  const [claimOrderNo, setClaimOrderNo] = useState('');
+  const [claiming, setClaiming] = useState(false);
   const fileRef = useRef(null);
 
   useEffect(() => {
     setReviews(null);
     api(`/reviews/${product._id}`).then(setReviews).catch(() => setReviews([]));
   }, [product._id]);
+
+  // My reward for this piece (if I've already claimed one)
+  useEffect(() => {
+    if (!user) {
+      setMyReward(null);
+      return;
+    }
+    api('/rewards/mine')
+      .then((rewards) => {
+        const mine = rewards.find((r) => r.review?.product?._id === product._id || r.review?.product === product._id);
+        setMyReward(mine || null);
+      })
+      .catch(() => setMyReward(null));
+  }, [user, product._id]);
 
   // Release preview object URLs on unmount
   const photosRef = useRef(photos);
@@ -77,15 +97,60 @@ export default function Reviews({ product, onChange }) {
       const review = await api(`/reviews/${product._id}`, { method: 'POST', body: form });
       photos.forEach((p) => URL.revokeObjectURL(p.url));
       setReviews((r) => [review, ...(r || [])]);
+
+      // If they added a photo and an Etsy order number, claim the reward too
+      const orderNo = etsyOrderNo.trim();
+      if (photos.length && orderNo) {
+        try {
+          const reward = await api('/rewards', { method: 'POST', body: { reviewId: review._id, etsyOrderNo: orderNo } });
+          setMyReward(reward);
+          toast(S.claimed);
+        } catch (err) {
+          toast(err.message, 'error'); // review still posted; only the claim failed
+        }
+      } else {
+        toast(S.posted);
+      }
+
       setRating(0);
       setComment('');
       setPhotos([]);
-      toast(S.posted);
+      setEtsyOrderNo('');
       onChange?.();
     } catch (err) {
       toast(err.message, 'error');
     } finally {
       setBusy(false);
+    }
+  };
+
+  // Claim a reward for a review that was already posted (with a photo) but not yet claimed
+  const claimReward = async () => {
+    const orderNo = claimOrderNo.trim();
+    if (!orderNo) {
+      toast(S.etsyOrderPlaceholder, 'info');
+      return;
+    }
+    const wasRejected = myReward?.status === REWARD_STATUS.REJECTED;
+    setClaiming(true);
+    try {
+      const reward = await api('/rewards', { method: 'POST', body: { reviewId: myReview._id, etsyOrderNo: orderNo } });
+      setMyReward(reward);
+      setClaimOrderNo('');
+      toast(wasRejected ? S.retried : S.claimed);
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const copyCode = async (code) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      toast(S.copied);
+    } catch {
+      toast(code, 'info');
     }
   };
 
@@ -148,7 +213,45 @@ export default function Reviews({ product, onChange }) {
                 {!user ? (
                   <Link to="/login" className="btn btn-dark">{S.loginPrompt}</Link>
                 ) : myReview ? (
-                  <p className="muted">{S.alreadyReviewed}</p>
+                  <>
+                    <p className="muted">{S.alreadyReviewed}</p>
+                    {myReward?.status === REWARD_STATUS.APPROVED ? (
+                      <div className="reward-status reward-approved">
+                        <span className="reward-status-title">{S.rewardCodeTitle(PCT)}</span>
+                        <div className="reward-code-row">
+                          <code className="reward-code">{myReward.code}</code>
+                          <button type="button" className="mini-btn" onClick={() => copyCode(myReward.code)}>{S.copyCode}</button>
+                        </div>
+                        <small>{S.rewardCodeHint}</small>
+                      </div>
+                    ) : myReward?.status === REWARD_STATUS.PENDING ? (
+                      <div className="reward-status reward-pending">
+                        <p className="muted">{S.rewardPending}</p>
+                      </div>
+                    ) : !myReview.photos?.length ? (
+                      <p className="muted reward-note">{S.claimNeedsPhoto}</p>
+                    ) : (
+                      // No reward yet, or a rejected one they can correct and resubmit
+                      <div className="reward-claim">
+                        {myReward?.status === REWARD_STATUS.REJECTED && (
+                          <p className="muted reward-rejected-note">{S.rewardRejected}</p>
+                        )}
+                        <span className="reward-status-title">
+                          {myReward?.status === REWARD_STATUS.REJECTED ? S.retryTitle : S.claimTitle(PCT)}
+                        </span>
+                        {myReward?.status !== REWARD_STATUS.REJECTED && <p className="muted">{S.claimText}</p>}
+                        <input
+                          value={claimOrderNo}
+                          onChange={(e) => setClaimOrderNo(e.target.value)}
+                          placeholder={S.etsyOrderPlaceholder}
+                          aria-label={S.etsyOrderLabel}
+                        />
+                        <button type="button" className="btn btn-dark" disabled={claiming} onClick={claimReward}>
+                          {claiming ? S.claiming : myReward?.status === REWARD_STATUS.REJECTED ? S.retry : S.claim}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <form className="review-form" onSubmit={submit}>
                     <label>
@@ -207,6 +310,19 @@ export default function Reviews({ product, onChange }) {
                         hidden
                         onChange={addPhotos}
                       />
+                    </div>
+                    <div className="review-reward-offer">
+                      <span className="reward-offer-title">🎁 {S.offerTitle(PCT)}</span>
+                      <p>{S.offerText(PCT)}</p>
+                      <label>
+                        {S.etsyOrderLabel}
+                        <input
+                          value={etsyOrderNo}
+                          onChange={(e) => setEtsyOrderNo(e.target.value)}
+                          placeholder={S.etsyOrderPlaceholder}
+                        />
+                      </label>
+                      <small>{S.etsyOrderHint}</small>
                     </div>
                     <button className="btn btn-dark" type="submit" disabled={busy}>
                       {busy ? S.submitting : S.submit}

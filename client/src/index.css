@@ -1228,6 +1228,39 @@ video.product-photo { background: #000; }
   margin-bottom: 32px;
 }
 
+/* Admin section tabs — split the panel so it isn't one long scroll */
+.admin-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto 32px;
+  padding: 5px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  width: fit-content;
+}
+.admin-tab {
+  padding: 9px 22px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: background 0.2s, color 0.2s;
+}
+.admin-tab:hover { color: var(--ink); }
+.admin-tab.active { background: var(--ink); color: #fff; }
+
+.admin-products-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
 .admin-form {
   background: var(--white);
   border-radius: var(--radius);
@@ -1344,6 +1377,63 @@ video.product-photo { background: #000; }
   overflow-x: auto;
 }
 .admin-table-wrap h3 { font-size: 1.4rem; margin-bottom: 18px; }
+
+/* Admin product table: search + category filter toolbar */
+.admin-table-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.admin-table-head h3 { margin-bottom: 0; }
+.admin-table-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+.admin-search { position: relative; }
+.admin-search input {
+  width: 240px;
+  max-width: 100%;
+  padding: 9px 30px 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  background: var(--white);
+}
+.admin-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--muted);
+}
+.admin-search-clear:hover { color: var(--ink); }
+.admin-table-tools select {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  background: var(--white);
+  color: var(--ink);
+}
+.admin-empty { padding: 24px 0; text-align: center; }
+
+/* Admin pagination */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.admin-pager { display: flex; align-items: center; gap: 10px; }
+.admin-page-of { font-size: 0.82rem; color: var(--muted); }
+.mini-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
 .admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
 .admin-table th {
   text-align: left;
@@ -2029,6 +2119,169 @@ label.mini-btn { display: inline-flex; align-items: center; cursor: pointer; }
   opacity: 0.75;
 }
 .review-delete:hover { opacity: 1; text-decoration: underline; }
+
+/* ---------- Photo-review reward (15% off next Etsy order) ---------- */
+.review-reward-offer {
+  margin: 4px 0 4px;
+  padding: 16px;
+  border: 1px dashed var(--silver-deep);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fbf8f2, var(--cream));
+}
+.reward-offer-title {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.review-reward-offer p { font-size: 0.85rem; color: var(--silver-deep); margin-bottom: 12px; }
+.review-reward-offer label { display: block; font-size: 0.8rem; font-weight: 500; }
+.review-reward-offer input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+}
+.review-reward-offer small { display: block; margin-top: 6px; font-size: 0.72rem; color: var(--silver-deep); }
+
+/* Reward status / claim shown after a review is posted */
+.reward-status, .reward-claim {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.reward-note { margin-top: 12px; font-size: 0.82rem; }
+.reward-status-title { display: block; font-weight: 600; margin-bottom: 8px; }
+.reward-claim input {
+  width: 100%;
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+}
+.reward-status.reward-approved { border-color: #9cc4a3; background: #f2f8f3; }
+.reward-status.reward-rejected { border-color: #e0b4ab; background: #fbf3f1; }
+
+.reward-code-row { display: flex; align-items: center; gap: 10px; margin: 4px 0 8px; }
+.reward-code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+}
+
+/* Reward status badges (reused on My Rewards + admin) */
+.reward-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.badge-pending { background: #fbf0d8; color: #8a6a1f; }
+.badge-approved { background: #e2f0e4; color: #2f7a44; }
+.badge-rejected { background: #f6e0db; color: #a93d2a; }
+
+/* ---------- My Rewards page ---------- */
+.reward-list { display: grid; gap: 18px; max-width: 720px; margin: 0 auto; }
+.reward-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.reward-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+.reward-piece { display: block; font-weight: 600; color: var(--ink); }
+a.reward-piece:hover { text-decoration: underline; }
+.reward-order { display: block; font-size: 0.8rem; margin-top: 2px; }
+.reward-code-box { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.reward-code-box .muted { font-size: 0.78rem; }
+
+/* Retry a rejected claim (My Rewards page + review card) */
+.reward-pending-note { margin-top: 12px; font-size: 0.82rem; }
+.reward-rejected-note { margin-bottom: 10px; font-size: 0.82rem; }
+.reward-retry { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.reward-retry > .muted { font-size: 0.82rem; margin-bottom: 10px; }
+.reward-retry-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.reward-retry-row input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+}
+.reward-retry-row .btn { white-space: nowrap; }
+
+/* ---------- Admin: coupon pool + reward claims ---------- */
+.coupon-pool {
+  margin: 8px 0 24px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--cream);
+}
+.coupon-pool-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.coupon-pool-stats { font-size: 0.8rem; font-weight: 600; color: var(--silver-deep); }
+.coupon-add label { display: block; font-size: 0.85rem; font-weight: 500; }
+.coupon-add textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  resize: vertical;
+}
+.coupon-add small { display: block; margin: 6px 0 12px; }
+
+/* Pool contents — one row per code, with inline rename / remove */
+.coupon-list-wrap { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.coupon-list { list-style: none; margin: 12px 0 0; padding: 0; max-height: 320px; overflow-y: auto; }
+.coupon-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.coupon-row:last-child { border-bottom: 0; }
+.coupon-row .table-actions { margin-left: auto; }
+.coupon-row.is-used .reward-code { opacity: 0.6; }
+.coupon-locked { margin-left: auto; font-size: 0.75rem; }
+.coupon-edit-input {
+  flex: 1 1 180px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  text-transform: uppercase;
+}
+/* Inline "Reject this claim? Yes / Cancel" confirmation (no browser popup) */
+.confirm-inline { align-items: center; flex-wrap: nowrap; }
+.confirm-q { font-size: 0.8rem; color: var(--ink); white-space: nowrap; margin-right: 2px; }
+
+.reward-photo-thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
+.reward-photo-thumbs img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
 
 @media (max-width: 900px) {
   .insta-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }

@@ -15,6 +15,7 @@ import Register from './pages/Register';
 // Orders page disabled for now — ordering happens on Etsy; re-enable when on-site ordering returns
 // import Orders from './pages/Orders';
 import Wishlist from './pages/Wishlist';
+import Rewards from './pages/Rewards';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
 import NotFound from './pages/NotFound';
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           {/* <Route path="/orders" element={<Orders />} /> */}
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/rewards" element={<Rewards />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
