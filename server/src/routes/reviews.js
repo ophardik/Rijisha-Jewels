@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
-import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import Review from '../models/Review.js';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/auth.js';
 import { uploadDir } from '../config.js';
+import { persistUploads, removeUpload } from '../storage.js';
 
 const router = Router();
 
 // ---------- customer photo upload ----------
+// Staging only — storage.js moves each photo to Cloudinary and cleans up here.
 fs.mkdirSync(uploadDir, { recursive: true });
 
 // The extension we save under decides the Content-Type express.static sends
@@ -50,12 +51,6 @@ const uploadPhotos = (req, res, next) =>
     next();
   });
 
-function removeUploadFile(url) {
-  if (url?.startsWith('/uploads/')) {
-    fs.unlink(path.join(uploadDir, path.basename(url)), () => {});
-  }
-}
-
 // Keep the product's headline rating in sync with real reviews
 async function syncProductRating(productId) {
   const [stats] = await Review.aggregate([
@@ -80,7 +75,8 @@ router.get('/:productId', async (req, res) => {
 
 // POST /api/reviews/:productId  (multipart/form-data: rating, comment, up to 4 "photos")
 router.post('/:productId', protect, uploadPhotos, async (req, res) => {
-  const photos = (req.files || []).map((f) => `/uploads/${f.filename}`);
+  // Assigned inside the try, but the catch needs it to undo the uploads.
+  let photos = [];
   try {
     const rating = Number(req.body.rating);
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
@@ -88,6 +84,10 @@ router.post('/:productId', protect, uploadPhotos, async (req, res) => {
     }
     const product = await Product.findById(req.params.productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    // Uploaded only once the review is known to be valid, so a rejected
+    // submission does not spend storage quota.
+    photos = await persistUploads(req.files || [], 'reviews');
 
     const review = await Review.create({
       product: product._id,
@@ -100,7 +100,7 @@ router.post('/:productId', protect, uploadPhotos, async (req, res) => {
     await syncProductRating(product._id);
     res.status(201).json(review);
   } catch (err) {
-    for (const url of photos) removeUploadFile(url);
+    for (const url of photos) await removeUpload(url);
     if (err.code === 11000) {
       return res.status(400).json({ message: 'You have already reviewed this piece' });
     }
@@ -117,7 +117,7 @@ router.delete('/:id', protect, async (req, res) => {
       return res.status(403).json({ message: 'You can only delete your own review' });
     }
     await review.deleteOne();
-    for (const url of review.photos) removeUploadFile(url);
+    for (const url of review.photos) await removeUpload(url);
     await syncProductRating(review.product);
     res.json({ message: 'Review deleted', id: review._id });
   } catch (err) {

@@ -42,6 +42,9 @@ export default function Login() {
           <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.login.busy : STRINGS.login.title}</button>
         </form>
         <p className="auth-switch">
+          <Link to="/forgot-password">{STRINGS.login.forgotLink}</Link>
+        </p>
+        <p className="auth-switch">
           {STRINGS.login.switchText} <Link to={`/register${params.get('next') ? `?next=${params.get('next')}` : ''}`}>{STRINGS.login.switchLink}</Link>
         </p>
       </div>

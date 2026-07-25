@@ -34,3 +34,32 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+
+      # Where password reset links point. Never derived from the request Host
+      # header, which a caller can forge — so it must be set here.
+      - key: PUBLIC_URL
+        value: https://rijisha.in
+
+      # SMTP for password reset emails. Without SMTP_HOST the server logs the
+      # message instead of sending it, and no customer can recover an account.
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+      # Cloudinary holds product photos, collection images and review photos.
+      # This instance's own disk is rebuilt on every deploy and on every wake
+      # from sleep, so anything stored there is lost — these are what keep
+      # uploaded images alive.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

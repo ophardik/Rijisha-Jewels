@@ -23,7 +23,24 @@ const REQUIRED_IN_PRODUCTION = [
   'JWT_SECRET', // without it, jwt.sign throws on every login
   'ADMIN_EMAIL',
   'ADMIN_PASSWORD',
+  'PUBLIC_URL', // without it, password reset links have no trustworthy origin
 ];
+
+/**
+ * The public address of the storefront, used to build links that leave the
+ * server — currently the password reset email.
+ *
+ * This deliberately never reads the request's Host header. An attacker can send
+ * `Host: evil.example` to /api/auth/forgot-password for someone else's email;
+ * the victim then receives a genuine-looking email whose link hands their reset
+ * token to evil.example. Configured value only — which is why PUBLIC_URL is
+ * required in production above.
+ */
+export function storefrontUrl() {
+  const configured = process.env.PUBLIC_URL?.trim() || process.env.CLIENT_ORIGIN?.split(',')[0].trim();
+  // The dev fallback matches the Vite dev server in index.js's corsOrigins.
+  return (configured || 'http://localhost:5173').replace(/\/+$/, '');
+}
 
 export function validateEnv() {
   const missing = REQUIRED_IN_PRODUCTION.filter((key) => !process.env[key]?.trim());

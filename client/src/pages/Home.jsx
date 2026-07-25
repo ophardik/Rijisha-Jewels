@@ -17,6 +17,20 @@ const COLLECTIONS = [
   { key: CATEGORY.ANTIQUE, art: 'tikka' },
 ].map((c) => ({ ...c, title: CATEGORY_LABEL[c.key], sub: STRINGS.home.collectionSub[c.key] }));
 
+// Story visual — photography only. This section talks about real artisans, so
+// it deliberately does NOT fall back to the JewelArt illustrations; until the
+// files land in client/public/images/ the frame stays an empty brand plate.
+const STORY_MAIN = '/images/story-atelier.jpg';
+const STORY_DETAIL = '/images/story-detail.jpg';
+
+function StoryPhoto({ src, alt, monogram }) {
+  const [missing, setMissing] = useState(false);
+  if (missing) return monogram ? <span className="story-placeholder">R</span> : null;
+  return (
+    <img className="story-photo" src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
+  );
+}
+
 export default function Home() {
   usePageTitle(STRINGS.titles.home);
   const [products, setProducts] = useState([]);
@@ -156,15 +170,15 @@ export default function Home() {
             <div><b>{STRINGS.home.promises[0].title}</b><span>{STRINGS.home.promises[0].sub}</span></div>
           </div>
           <div className="promise">
-            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 7h13v10H3zM16 10h4l1 3v4h-5" /><circle cx="7" cy="19" r="1.8" /><circle cx="18" cy="19" r="1.8" /></svg></span>
+            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 10.4 9.4 7.8a1.85 1.85 0 0 1 2.6-2.6 1.85 1.85 0 0 1 2.6 2.6L12 10.4Z" /><path d="M5 13.6v3.1a4.6 4.6 0 0 0 4.6 4.6h4.8a4.6 4.6 0 0 0 4.6-4.6v-3.1" /><path d="M5 13.6a1.7 1.7 0 0 1 3.4 0v1.7M19 13.6a1.7 1.7 0 0 0-3.4 0v1.7" /></svg></span>
             <div><b>{STRINGS.home.promises[1].title}</b><span>{STRINGS.home.promises[1].sub}</span></div>
           </div>
           <div className="promise">
-            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg></span>
+            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 3.5 9.5 6.8 3h10.4l3.3 6.5L12 21Z" /><path d="M3.5 9.5h17" /><path d="M9 3 7.4 9.5 12 21l4.6-11.5L15 3" /></svg></span>
             <div><b>{STRINGS.home.promises[2].title}</b><span>{STRINGS.home.promises[2].sub}</span></div>
           </div>
           <div className="promise">
-            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 3l2.5 5.3 5.5.8-4 4 1 5.9-5-2.8-5 2.8 1-5.9-4-4 5.5-.8L12 3Z" /></svg></span>
+            <span className="promise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15.2V13a2 2 0 0 1 4 0v3" /><path d="M8.5 16.6V13a3.5 3.5 0 0 1 7 0v4.2" /><path d="M7 15.4V13a5 5 0 0 1 10 0v2.6" /><path d="M5.5 15V13a6.5 6.5 0 0 1 13 0v2" /></svg></span>
             <div><b>{STRINGS.home.promises[3].title}</b><span>{STRINGS.home.promises[3].sub}</span></div>
           </div>
         </div>
@@ -175,10 +189,15 @@ export default function Home() {
         <Reveal>
         <div className="container story-inner">
           <div className="story-visual">
-            <div className="story-frame">
-              <JewelArt art="pendant" />
+            <div className="story-stack">
+              <div className="story-frame">
+                <StoryPhoto src={STORY_MAIN} alt={STRINGS.home.storyMainAlt} monogram />
+              </div>
+              <div className="story-detail">
+                <StoryPhoto src={STORY_DETAIL} alt={STRINGS.home.storyDetailAlt} />
+              </div>
+              <div className="story-badge">{STRINGS.home.storyBadge}</div>
             </div>
-            {/* <div className="story-badge">Since<br /><b>2012</b></div> */}
           </div>
           <div className="story-text">
             <span className="section-eyebrow">{STRINGS.home.storyEyebrow}</span>

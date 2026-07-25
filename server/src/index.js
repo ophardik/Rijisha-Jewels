@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { connectDB } from './db.js';
 import { seedProducts } from './seed.js';
 import { isProduction, uploadDir, validateEnv } from './config.js';
+import { warnIfMailUnconfigured } from './mailer.js';
+import { warnIfStorageUnconfigured } from './storage.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
@@ -18,6 +20,8 @@ import couponRoutes from './routes/coupons.js';
 
 // Stop now if a secret is missing, rather than booting a half-configured shop
 validateEnv();
+warnIfMailUnconfigured();
+warnIfStorageUnconfigured();
 
 const app = express();
 

@@ -8,6 +8,14 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, minlength: 6, select: false },
     isAdmin: { type: Boolean, default: false },
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+
+    // Password reset. Only the SHA-256 hash of the token is stored — a leaked
+    // database dump then cannot be used to reset anyone's password, the same
+    // reason `password` is bcrypt-hashed above.
+    resetTokenHash: { type: String, select: false },
+    resetTokenExpires: { type: Date, select: false },
+    // When the last reset email went out, so a script cannot spam an inbox.
+    resetRequestedAt: { type: Date, select: false },
   },
   { timestamps: true }
 );

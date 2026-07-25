@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import Product from '../models/Product.js';
 import { protect, adminOnly } from '../middleware/auth.js';
+import { uploadDir } from '../config.js';
+import { persistUpload, removeUpload } from '../storage.js';
 import { CATEGORIES, CATEGORY_ALL, SORT, MEDIA_TYPE } from '../enums.js';
 
 const router = Router();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ---------- image upload ----------
-const uploadDir = path.join(__dirname, '..', '..', 'uploads');
+// ---------- media upload ----------
+// multer writes here first; storage.js then moves the file to Cloudinary and
+// deletes this copy, so nothing durable depends on the server's own disk.
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -42,20 +42,14 @@ const uploadMedia = (req, res, next) =>
     next();
   });
 
-const fileToMedia = (file) => ({
-  url: `/uploads/${file.filename}`,
-  type: VIDEO_RE.test(file.mimetype) ? MEDIA_TYPE.VIDEO : MEDIA_TYPE.IMAGE,
-});
-
-function uploadedMedia(req) {
+async function uploadedMedia(req) {
   const files = [...(req.files?.media || []), ...(req.files?.image || [])];
-  return files.map(fileToMedia);
-}
-
-function removeUploadFile(url) {
-  if (url?.startsWith('/uploads/')) {
-    fs.unlink(path.join(uploadDir, path.basename(url)), () => {});
-  }
+  return Promise.all(
+    files.map(async (file) => ({
+      url: await persistUpload(file, 'products'),
+      type: VIDEO_RE.test(file.mimetype) ? MEDIA_TYPE.VIDEO : MEDIA_TYPE.IMAGE,
+    }))
+  );
 }
 
 // Keep product.image (card thumbnail) in sync: first photo, else first video
@@ -139,7 +133,7 @@ router.post('/', protect, adminOnly, uploadMedia, async (req, res) => {
     if (!CATEGORIES.includes(fields.category)) {
       return res.status(400).json({ message: `Category must be one of: ${CATEGORIES.join(', ')}` });
     }
-    fields.media = uploadedMedia(req);
+    fields.media = await uploadedMedia(req);
     fields.slug = await uniqueSlug(fields.name);
 
     const product = new Product(fields);
@@ -180,14 +174,14 @@ router.put('/:id', protect, adminOnly, uploadMedia, async (req, res) => {
         : product.image ? [{ url: product.image, type: MEDIA_TYPE.IMAGE }] : [];
       const keptUrls = new Set(kept.map((m) => m.url));
       for (const m of currentMedia) {
-        if (!keptUrls.has(m.url)) removeUploadFile(m.url);
+        if (!keptUrls.has(m.url)) await removeUpload(m.url);
       }
       fields.media = currentMedia
         .filter((m) => keptUrls.has(m.url))
         .map(({ url, type }) => ({ url, type }))
-        .concat(uploadedMedia(req));
+        .concat(await uploadedMedia(req));
     } else if (req.files?.media?.length || req.files?.image?.length) {
-      fields.media = product.media.concat(uploadedMedia(req));
+      fields.media = product.media.concat(await uploadedMedia(req));
     }
 
     Object.assign(product, fields);
@@ -204,9 +198,10 @@ router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    // Remove any uploaded files that were ours
-    removeUploadFile(product.image);
-    for (const m of product.media || []) removeUploadFile(m.url);
+    // Remove any uploaded files that were ours. product.image mirrors media[0],
+    // so deleting it separately would double-delete — media covers it.
+    for (const m of product.media || []) await removeUpload(m.url);
+    if (!product.media?.length) await removeUpload(product.image);
     res.json({ message: 'Product deleted', id: product._id });
   } catch (err) {
     res.status(500).json({ message: 'Could not delete product', error: err.message });

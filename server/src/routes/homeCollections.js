@@ -1,17 +1,16 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import HomeCollection from '../models/HomeCollection.js';
 import { protect, adminOnly } from '../middleware/auth.js';
+import { uploadDir } from '../config.js';
+import { persistUpload, removeUpload } from '../storage.js';
 import { COLLECTION_SLOTS, HERO_SLOT } from '../enums.js';
 
 const router = Router();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ---------- image upload ----------
-const uploadDir = path.join(__dirname, '..', '..', 'uploads');
+// Staging only — storage.js moves the file to Cloudinary and cleans up here.
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -46,12 +45,6 @@ const uploadImage = (req, res, next) =>
     next();
   });
 
-function removeUploadFile(url) {
-  if (url?.startsWith('/uploads/')) {
-    fs.unlink(path.join(uploadDir, path.basename(url)), () => {});
-  }
-}
-
 // ---------- public ----------
 
 // GET /api/home-collections → { earrings: '/uploads/..', hero: '/uploads/..', ... }
@@ -81,10 +74,10 @@ router.put('/:category', protect, adminOnly, uploadImage, async (req, res) => {
       return res.status(400).json({ message: 'Please choose a file to upload' });
     }
 
-    const image = `/uploads/${req.file.filename}`;
+    const image = await persistUpload(req.file, 'collections');
     const existing = await HomeCollection.findOne({ category });
     if (existing) {
-      removeUploadFile(existing.image);
+      await removeUpload(existing.image);
       existing.image = image;
       await existing.save();
     } else {
@@ -105,7 +98,7 @@ router.delete('/:category', protect, adminOnly, async (req, res) => {
     }
 
     const doc = await HomeCollection.findOneAndDelete({ category });
-    if (doc) removeUploadFile(doc.image);
+    if (doc) await removeUpload(doc.image);
     res.json({ category, image: null });
   } catch (err) {
     res.status(500).json({ message: 'Could not reset collection image', error: err.message });

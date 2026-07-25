@@ -180,11 +180,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: var(--accent);
   margin-bottom: 22px;
 }
-.hero-eyebrow::before {
-  content: '';
-  width: 42px; height: 1px;
-  background: var(--accent);
-}
 .hero h1 {
   font-family: var(--font-display);
   font-size: clamp(2.8rem, 5.4vw, 4.6rem);
@@ -583,8 +578,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: grid;
   place-items: center;
 }
+/* Holds the tall frame plus the offset detail card and badge that overlap it —
+   the frame itself clips its own contents, so it can't be the anchor. */
+.story-stack { position: relative; width: min(440px, 100%); }
 .story-frame {
-  width: min(440px, 100%);
+  width: 100%;
   aspect-ratio: 4/5;
   border-radius: var(--radius);
   background: linear-gradient(160deg, #23232a 0%, #3c3f47 55%, #565b64 100%);
@@ -600,11 +598,37 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   inset: 16px;
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: 12px;
+  z-index: 2;
+  pointer-events: none;
 }
-.story-frame svg { width: 58%; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.45)); }
+/* Neutral holding state while the real photography is pending — a brand mark,
+   never a stand-in illustration of a piece. */
+.story-placeholder {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  color: rgba(255,255,255,0.13);
+  letter-spacing: 0.08em;
+}
+/* Sits over the illustration so a failed/absent photo simply reveals the art. */
+.story-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Macro detail shot, tucked into the lower-left corner of the main frame. */
+.story-detail {
+  position: absolute;
+  left: -36px;
+  bottom: -36px;
+  width: 47%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #2b2b32, #4c515a);
+  border: 7px solid var(--ivory);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.20);
+  display: grid;
+  place-items: center;
+}
 .story-badge {
   position: absolute;
-  top: 26px; right: 2px;
+  top: 24px; right: -26px;
   width: 108px; height: 108px;
   border-radius: 50%;
   background: var(--accent);
@@ -656,38 +680,38 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .t-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
+  gap: 20px;
 }
 .t-card {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: var(--radius);
-  padding: 34px 30px;
+  padding: 24px 22px;
   transition: transform 0.3s, background 0.3s;
 }
 .t-card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.08); }
-.t-card .stars { color: var(--silver); }
+.t-card .stars { color: var(--silver); font-size: 0.9rem; }
 .t-card p {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-style: italic;
-  margin: 18px 0 24px;
-  line-height: 1.5;
+  margin: 12px 0 18px;
+  line-height: 1.45;
   color: #dcdcdf;
 }
-.t-who { display: flex; align-items: center; gap: 14px; }
+.t-who { display: flex; align-items: center; gap: 12px; }
 .t-avatar {
-  width: 44px; height: 44px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--silver), var(--silver-deep));
   color: var(--ink);
   font-weight: 600;
   display: grid;
   place-items: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
-.t-who b { display: block; font-size: 0.9rem; font-weight: 500; color: #fff; }
-.t-who span { font-size: 0.74rem; color: #97979d; letter-spacing: 0.08em; }
+.t-who b { display: block; font-size: 0.84rem; font-weight: 500; color: #fff; }
+.t-who span { font-size: 0.7rem; color: #97979d; letter-spacing: 0.08em; }
 
 /* ---------- Newsletter ---------- */
 .newsletter { background: var(--cream); }
@@ -853,6 +877,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .cat-card { min-height: 340px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .story-inner { grid-template-columns: 1fr; gap: 44px; }
+  /* Pull the overlapping card and badge inside the frame so neither can push
+     the page into horizontal scroll on a narrow screen. */
+  .story-stack { width: min(400px, 88%); }
+  .story-detail { left: -14px; bottom: -18px; width: 42%; border-width: 5px; }
+  .story-badge { top: 16px; right: -12px; width: 88px; height: 88px; font-size: 0.82rem; }
   .t-grid { grid-template-columns: 1fr; }
   .section { padding: 68px 0; }
   .hero-stats { gap: 28px; }
