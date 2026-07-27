@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 // import { useCart } from '../context/CartContext'; // cart disabled — buying happens on Etsy
 import { useAuth } from '../context/AuthContext';
 import { toast } from '../toast';
+import ProductDescription from '../components/ProductDescription';
 import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
 import Reviews from '../components/Reviews';
@@ -27,6 +28,7 @@ export default function ProductDetail() {
   const [activeMedia, setActiveMedia] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [pop, setPop] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(true);
   // const { add } = useCart(); // cart disabled
   const { user, wishlist, toggleWishlist } = useAuth();
 
@@ -75,6 +77,29 @@ export default function ProductDetail() {
     ? product.media
     : product.image ? [{ url: product.image, type: MEDIA_TYPE.IMAGE }] : [];
   const current = media[Math.min(activeMedia, media.length - 1)];
+
+  // Spec sheet — only the filled-in rows are shown, so half-filled products stay tidy.
+  const specs = [
+    [STRINGS.productDetail.specMetal, product.metal],
+    [STRINGS.productDetail.specWeight, product.weight],
+    [STRINGS.productDetail.specPlating, product.plating],
+    [STRINGS.productDetail.specColor, product.color],
+  ].filter(([, value]) => value);
+
+  // `lead: true` gives the block bigger, darker type — the description is the
+  // one customers actually read, so it should not look like fine print.
+  const blocks = [
+    { label: STRINGS.productDetail.careInstructions, value: product.careInstructions },
+    { label: STRINGS.productDetail.packageContains, value: product.packageContains },
+    { label: STRINGS.productDetail.descriptionLabel, value: product.description, lead: true },
+    { label: STRINGS.productDetail.soldBy, value: product.soldBy || STRINGS.productDetail.defaultSoldBy },
+    {
+      label: STRINGS.productDetail.countryOfOrigin,
+      value: product.countryOfOrigin || STRINGS.productDetail.defaultCountryOfOrigin,
+    },
+  ].filter((block) => block.value);
+
+  const hasDetails = specs.length > 0 || blocks.length > 0;
 
   // Cart disabled — buying happens on Etsy
   // const onAdd = () => {
@@ -173,8 +198,6 @@ export default function ProductDetail() {
             </div>
             <p className="tax-note">{STRINGS.productDetail.taxNote}</p>
 
-            <p className="detail-desc">{product.description}</p>
-
             <ul className="detail-points">
               {STRINGS.productDetail.points.map((point) => (
                 <li key={point}><span className="tick">✓</span> {point}</li>
@@ -210,6 +233,43 @@ export default function ProductDetail() {
                 </svg>
               </button>
             </div>
+
+            {hasDetails && (
+              <div className={`detail-specs ${detailsOpen ? 'open' : ''}`}>
+                <button
+                  type="button"
+                  className="detail-specs-head"
+                  onClick={() => setDetailsOpen((v) => !v)}
+                  aria-expanded={detailsOpen}
+                >
+                  <span>{STRINGS.productDetail.detailsTitle}</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+
+                {detailsOpen && (
+                  <div className="detail-specs-body">
+                    {specs.length > 0 && (
+                      <div className="spec-grid">
+                        {specs.map(([label, value]) => (
+                          <div className="spec-cell" key={label}>
+                            <span className="spec-label">{label}</span>
+                            <span className="spec-value">{value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {blocks.map(({ label, value, lead }) => (
+                      <div className={`spec-block ${lead ? 'lead' : ''}`} key={label}>
+                        <h4>{label}</h4>
+                        {lead ? <ProductDescription text={value} /> : <p>{value}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>

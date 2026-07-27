@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 import { toast } from '../toast';
 import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
@@ -39,7 +40,7 @@ export default function Register() {
         <form onSubmit={submit} className="auth-form">
           <label>{STRINGS.register.name}<input required value={name} onChange={(e) => setName(e.target.value)} placeholder={STRINGS.register.namePlaceholder} /></label>
           <label>{STRINGS.login.email}<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={STRINGS.login.emailPlaceholder} /></label>
-          <label>{STRINGS.login.password}<input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.register.passwordPlaceholder} /></label>
+          <label>{STRINGS.login.password}<PasswordInput required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.register.passwordPlaceholder} /></label>
           {error && <p className="form-error">{error}</p>}
           <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.register.busy : STRINGS.register.title}</button>
         </form>

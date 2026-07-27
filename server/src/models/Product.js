@@ -21,6 +21,16 @@ const productSchema = new mongoose.Schema(
       ],
       default: [],
     }, // gallery: all photos & videos of the product
+    // Spec sheet shown in the "Product Details" panel on the product page.
+    // All optional — the panel only renders the rows that are filled in.
+    metal: { type: String, default: '' },
+    weight: { type: String, default: '' },
+    plating: { type: String, default: '' },
+    color: { type: String, default: '' },
+    careInstructions: { type: String, default: '' },
+    packageContains: { type: String, default: '' },
+    soldBy: { type: String, default: '' },
+    countryOfOrigin: { type: String, default: '' },
     art: { type: String, default: 'pendant' }, // fallback SVG illustration key on the client
     bg: { type: String, default: 'bg-a' }, // card background style
     rating: { type: Number, default: 0 },

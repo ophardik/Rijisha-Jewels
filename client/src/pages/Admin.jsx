@@ -53,6 +53,14 @@ const EMPTY = {
   mrp: '',
   stock: '25',
   tag: '',
+  metal: '',
+  weight: '',
+  plating: '',
+  color: '',
+  careInstructions: '',
+  packageContains: '',
+  soldBy: '',
+  countryOfOrigin: '',
   art: 'pendant',
   bg: 'bg-a',
 };
@@ -142,6 +150,14 @@ export default function Admin() {
       mrp: p.mrp ? String(p.mrp) : '',
       stock: String(p.stock),
       tag: p.tag || '',
+      metal: p.metal || '',
+      weight: p.weight || '',
+      plating: p.plating || '',
+      color: p.color || '',
+      careInstructions: p.careInstructions || '',
+      packageContains: p.packageContains || '',
+      soldBy: p.soldBy || '',
+      countryOfOrigin: p.countryOfOrigin || '',
       art: p.art || 'pendant',
       bg: p.bg || 'bg-a',
     });
@@ -407,6 +423,33 @@ export default function Admin() {
             </label>
             <label className="wide">{STRINGS.admin.descriptionLabel}
               <textarea rows="3" value={form.description} onChange={set('description')} placeholder={STRINGS.admin.descriptionPlaceholder} />
+            </label>
+
+            {/* Spec sheet — feeds the "Product Details" panel on the product page.
+                Blank fields are simply left out there. */}
+            <label>{STRINGS.admin.metalLabel}
+              <input value={form.metal} onChange={set('metal')} placeholder={STRINGS.admin.metalPlaceholder} />
+            </label>
+            <label>{STRINGS.admin.weightLabel}
+              <input value={form.weight} onChange={set('weight')} placeholder={STRINGS.admin.weightPlaceholder} />
+            </label>
+            <label>{STRINGS.admin.platingLabel}
+              <input value={form.plating} onChange={set('plating')} placeholder={STRINGS.admin.platingPlaceholder} />
+            </label>
+            <label>{STRINGS.admin.colorLabel}
+              <input value={form.color} onChange={set('color')} placeholder={STRINGS.admin.colorPlaceholder} />
+            </label>
+            <label>{STRINGS.admin.soldByLabel}
+              <input value={form.soldBy} onChange={set('soldBy')} placeholder={STRINGS.admin.soldByPlaceholder} />
+            </label>
+            <label>{STRINGS.admin.countryLabel}
+              <input value={form.countryOfOrigin} onChange={set('countryOfOrigin')} placeholder={STRINGS.admin.countryPlaceholder} />
+            </label>
+            <label className="wide">{STRINGS.admin.careLabel}
+              <textarea rows="2" value={form.careInstructions} onChange={set('careInstructions')} placeholder={STRINGS.admin.carePlaceholder} />
+            </label>
+            <label className="wide">{STRINGS.admin.packageLabel}
+              <textarea rows="2" value={form.packageContains} onChange={set('packageContains')} placeholder={STRINGS.admin.packagePlaceholder} />
             </label>
           </div>
 

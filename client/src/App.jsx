@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Toaster from './components/Toaster';
 import { SvgDefs } from './components/JewelArt';
 import Home from './pages/Home';
+import About from './pages/About';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 // Cart/checkout disabled for now — purchases happen on Etsy instead
@@ -42,6 +43,7 @@ export default function App() {
         <div className="route-fade" key={location.pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           {/* <Route path="/cart" element={<Cart />} /> */}

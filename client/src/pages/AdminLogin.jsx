@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
+import PasswordInput from '../components/PasswordInput';
 import { toast } from '../toast';
 import { usePageTitle } from '../usePageTitle';
 import { STRINGS } from '../strings';
@@ -42,7 +43,7 @@ export default function AdminLogin() {
         <h2 className="serif">{STRINGS.adminLogin.title}</h2>
         <form onSubmit={submit} className="auth-form">
           <label>{STRINGS.adminLogin.email}<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={STRINGS.adminLogin.emailPlaceholder} /></label>
-          <label>{STRINGS.login.password}<input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.adminLogin.passwordPlaceholder} /></label>
+          <label>{STRINGS.login.password}<PasswordInput required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={STRINGS.adminLogin.passwordPlaceholder} /></label>
           {error && <p className="form-error">{error}</p>}
           <button className="btn btn-dark full" disabled={busy}>{busy ? STRINGS.login.busy : STRINGS.adminLogin.submit}</button>
         </form>

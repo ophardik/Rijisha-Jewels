@@ -62,6 +62,7 @@ export default function Header() {
           <nav className={`nav ${menuOpen ? 'open' : ''}`}>
             <ul>
               <li><NavLink to="/" onClick={close}>{STRINGS.header.navHome}</NavLink></li>
+              <li><NavLink to="/about" onClick={close}>{STRINGS.header.navAbout}</NavLink></li>
               <li><NavLink to="/shop" className={() => shopClass(null)} onClick={close}>{STRINGS.header.navShop}</NavLink></li>
               {Object.values(CATEGORY).map((category) => (
                 <li key={category}>

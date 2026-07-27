@@ -722,6 +722,104 @@ input, select { font-family: inherit; }
 .wish-lg { border: 1px solid var(--line); width: 52px; height: 52px; }
 .wish-lg.active { color: #c0392b; border-color: #c0392b; }
 
+/* ---- Product Details panel ---- */
+.detail-specs { margin-top: 32px; border-top: 1px solid var(--line); }
+.detail-specs-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+}
+.detail-specs-head svg { flex: none; color: var(--muted); transition: transform 0.25s ease; }
+.detail-specs.open .detail-specs-head svg { transform: rotate(180deg); }
+.detail-specs-body { padding-bottom: 28px; display: grid; gap: 20px; }
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--cream, #faf7f4);
+}
+.spec-cell { display: grid; gap: 3px; min-width: 0; }
+.spec-label { font-size: 0.75rem; color: var(--muted); }
+.spec-value { font-size: 0.92rem; font-weight: 500; overflow-wrap: anywhere; }
+
+/* Section labels are set apart from body copy by case and letter-spacing
+   rather than weight alone — at a glance the label reads as a label. */
+.spec-block h4 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.spec-block p {
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--soft-ink);
+  white-space: pre-line;
+}
+/* The description carries the sell, so it sits a step above the supporting
+   rows: darker ink and a little more size. */
+.spec-block.lead { border-top: 1px solid var(--line); padding-top: 20px; }
+.spec-block.lead > h4 { color: var(--accent); }
+
+.product-description { display: grid; gap: 12px; }
+.product-description p {
+  font-size: 0.97rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--ink);
+}
+/* Sub-headings inside the pasted copy ("Care Instructions", "Shipping"…) —
+   sentence case and bold, so they never read as body text. */
+.product-description h5 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 6px;
+}
+.product-description h5:first-child { margin-top: 0; }
+.product-description ul { display: grid; gap: 7px; padding-left: 4px; }
+.product-description li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--soft-ink);
+  list-style: none;
+}
+.product-description li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .spec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .qty-picker {
   display: inline-flex;
   align-items: center;
@@ -844,6 +942,29 @@ input, select { font-family: inherit; }
   transition: border-color 0.25s;
 }
 .field-grid input:focus, .auth-form input:focus { border-color: var(--accent); }
+
+/* Password field with the show/hide eye. The wrapper is the positioning
+   context; the input keeps its normal styling and just leaves room for the
+   button on the right. */
+.password-field { position: relative; display: block; }
+.password-field input { width: 100%; padding-right: 48px; }
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.password-toggle:hover { color: var(--ink); background: var(--cream); }
 
 .pay-options { display: grid; gap: 12px; }
 .pay-option {
@@ -1039,6 +1160,125 @@ input, select { font-family: inherit; }
 }
 .story-text p { color: var(--soft-ink); font-weight: 300; margin-bottom: 16px; }
 .story-points { margin: 26px 0 34px; display: grid; gap: 14px; }
+
+/* ---------- About ---------- */
+.about-intro { padding-bottom: 0; }
+/* Columns size to their content rather than splitting the row evenly, so a
+   long written-out value gets the width it needs instead of being squeezed
+   into a quarter of the row. */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: space-between;
+  gap: 24px 40px;
+  margin-top: 8px;
+  padding: 36px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.about-stat { text-align: center; }
+.about-stat b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+/* A written-out value ("One Creation. One Chance.") would wrap at display size
+   and throw the row out of alignment, so it scales with the viewport and is
+   held to one line. The line-height matches the numeric stats so every label
+   in the row still sits on the same baseline. */
+.about-stat b.phrase {
+  font-size: clamp(1.05rem, 2.1vw, 1.7rem);
+  line-height: 2.6rem;
+  white-space: nowrap;
+}
+.about-stat span {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.about-values-section { background: var(--white); border-top: 1px solid var(--line); }
+.about-values { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+.about-value {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px;
+  background: var(--ivory);
+}
+.about-value-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--cream);
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.about-value-icon svg { width: 22px; height: 22px; }
+.about-value h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+.about-value p { color: var(--soft-ink); font-weight: 300; font-size: 0.93rem; line-height: 1.7; }
+
+.about-steps { display: grid; gap: 26px; counter-reset: step; }
+.about-steps li { display: flex; gap: 22px; align-items: flex-start; list-style: none; }
+.about-step-no {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--silver-deep, var(--muted));
+  min-width: 52px;
+  padding-top: 2px;
+}
+.about-steps h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+.about-steps p { color: var(--soft-ink); font-weight: 300; font-size: 0.93rem; line-height: 1.7; }
+
+.about-visit { padding-top: 0; }
+.about-visit-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.about-visit-card .section-eyebrow { display: block; }
+.about-visit-card h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 500;
+  margin: 8px 0 14px;
+}
+.about-visit-card p { color: var(--soft-ink); font-weight: 300; max-width: 620px; margin: 0 auto; }
+.about-visit-card address {
+  font-style: normal;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 22px 0 26px;
+}
+.about-visit-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  .about-stats { grid-template-columns: repeat(2, auto); justify-content: space-around; gap: 28px; }
+  .about-values { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  /* Two narrow columns cannot hold the phrase on one line, so it takes the
+     whole row and keeps its size instead of shrinking to fit. */
+  .about-stat.wide { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .about-visit-card { padding: 36px 22px; }
+  .about-visit-actions .btn { flex: 1 1 100%; }
+  .about-steps li { gap: 14px; }
+  .about-step-no { min-width: 40px; font-size: 1.25rem; }
+}
 
 /* ---------- Testimonials ---------- */
 .testimonials { background: var(--ink); color: #eceae6; }

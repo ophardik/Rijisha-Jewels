@@ -38,6 +38,7 @@ export default function Footer() {
             <ul>
               {/* Orders disabled for now — ordering happens on Etsy
               <li><Link to="/orders">Track Your Order</Link></li> */}
+              <li><Link to="/about">{STRINGS.footer.aboutUs}</Link></li>
               <li><Link to="/wishlist">{STRINGS.footer.myWishlist}</Link></li>
               {/* <li><Link to="/cart">My Bag</Link></li> */}
               <li><a href={ETSY_URL} target="_blank" rel="noreferrer">{STRINGS.footer.etsyShop}</a></li>

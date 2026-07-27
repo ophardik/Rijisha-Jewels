@@ -73,7 +73,11 @@ async function uniqueSlug(name, currentId = null) {
 
 function readFields(body) {
   const fields = {};
-  const strings = ['name', 'category', 'subCategory', 'description', 'tag', 'art', 'bg', 'image'];
+  const strings = [
+    'name', 'category', 'subCategory', 'description', 'tag', 'art', 'bg', 'image',
+    'metal', 'weight', 'plating', 'color',
+    'careInstructions', 'packageContains', 'soldBy', 'countryOfOrigin',
+  ];
   const numbers = ['price', 'mrp', 'stock'];
   for (const key of strings) if (body[key] !== undefined) fields[key] = String(body[key]).trim();
   for (const key of numbers) {
