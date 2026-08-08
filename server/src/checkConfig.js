@@ -57,8 +57,30 @@ async function checkCloudinary() {
 }
 
 async function checkSmtp() {
+  // Mirrors the transport precedence in mailer.js: Resend first, SMTP second.
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  if (resendKey) {
+    try {
+      // Cheapest authenticated call Resend offers — proves the key is live
+      // without sending anything to a real inbox.
+      const res = await fetch('https://api.resend.com/domains', {
+        headers: { Authorization: `Bearer ${resendKey}` },
+      });
+      if (res.ok) record('Resend', true, 'API key accepted — password reset emails will send over HTTPS');
+      else record('Resend', false, `API key rejected (${res.status}) — ${await res.text().catch(() => '')}`);
+    } catch (err) {
+      record('Resend', false, err.message);
+    }
+    return;
+  }
+
   const host = process.env.SMTP_HOST?.trim();
-  if (!host) return record('SMTP', false, 'not configured — password reset emails are only logged, not sent');
+  if (!host)
+    return record(
+      'Mail',
+      false,
+      'neither RESEND_API_KEY nor SMTP_HOST is set — password reset emails are only logged, not sent'
+    );
 
   const port = Number(process.env.SMTP_PORT) || 587;
   const user = process.env.SMTP_USER?.trim();

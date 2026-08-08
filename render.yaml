@@ -1,4 +1,11 @@
-# Render deployment for rijisha.in
+# Render deployment for www.rijisha.com
+#
+# NOTE: the live service (Rijisha-Jewels, srv-d9if39naqgkc73a0i3d0) was created
+# through the dashboard, not from this file, and its settings have drifted from
+# it — the live service runs in Oregon on the free plan with no health check
+# path. Editing this file therefore does NOT change the live service. Until the
+# service is adopted as a Blueprint, treat the dashboard as the source of truth
+# and mirror any change here by hand.
 #
 # One web service runs the API and serves the built storefront from the same
 # origin, so the browser never makes a cross-origin request.
@@ -38,10 +45,17 @@ services:
       # Where password reset links point. Never derived from the request Host
       # header, which a caller can forge — so it must be set here.
       - key: PUBLIC_URL
-        value: https://rijisha.in
+        value: https://www.rijisha.com
 
-      # SMTP for password reset emails. Without SMTP_HOST the server logs the
-      # message instead of sending it, and no customer can recover an account.
+      # Password reset email goes through Resend's HTTPS API. Free instances
+      # block outbound SMTP (ports 25/465/587), so nodemailer cannot deliver
+      # from here at all — this key is what makes account recovery work.
+      - key: RESEND_API_KEY
+        sync: false
+
+      # SMTP is the fallback transport, used only when RESEND_API_KEY is empty.
+      # Leave these unset on Render; they exist for local development and for a
+      # future host that permits outbound SMTP.
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT

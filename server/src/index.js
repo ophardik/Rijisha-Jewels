@@ -56,7 +56,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/coupons', couponRoutes);
 
-// Serve the built storefront from the same origin as the API, so rijisha.in
+// Serve the built storefront from the same origin as the API, so www.rijisha.com
 // serves both and api.js's relative '/api' calls just work.
 const clientDist = path.join(__dirname, '..', '..', 'client', 'dist');
 if (fs.existsSync(clientDist)) {
