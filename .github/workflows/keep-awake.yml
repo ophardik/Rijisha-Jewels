@@ -1,0 +1,36 @@
+# Pings the Render service so its free instance does not spin down.
+#
+# Render's free plan sleeps a web service after ~15 minutes with no traffic,
+# and the next visitor waits ~30-60s on a "waking up" screen while it boots.
+# A request every 10 minutes keeps it warm.
+#
+# GitHub's scheduler is best-effort and frequently runs late, so this is a
+# backup — the primary pinger should be an external cron (cron-job.org or
+# UptimeRobot) hitting the same URL. Note also that GitHub disables scheduled
+# workflows on repos with no commits for 60 days; re-enable it in the Actions
+# tab if the shop goes quiet for that long.
+#
+# Free instance hours are capped at 750/month per account. Keeping one service
+# awake around the clock costs ~730 of them, so this leaves no room for a
+# second free service.
+
+name: Keep Render awake
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # lets you fire a ping by hand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          # --max-time 90 because a cold start can take the better part of a
+          # minute; a short timeout would abort the very request that wakes it.
+          # --retry covers the case where the first attempt times out anyway.
+          curl --fail --show-error --silent \
+               --max-time 90 \
+               --retry 2 --retry-delay 15 --retry-all-errors \
+               https://rijisha-jewels.onrender.com/api/health

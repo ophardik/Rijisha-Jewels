@@ -3,10 +3,20 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import JewelArt from '../components/JewelArt';
+import { StoryArtMain, StoryArtDetail } from '../components/StoryArt';
 import AdminRewards from '../components/AdminRewards';
 import Loader from '../components/Loader';
 import { toast } from '../toast';
-import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT, MEDIA_TYPE, PRODUCT_TAG } from '../enums';
+import {
+  CATEGORY,
+  CATEGORY_LABEL,
+  HERO_SLOT,
+  SORT,
+  MEDIA_TYPE,
+  PRODUCT_TAG,
+  STORY_SLOT,
+  STORY_DETAIL_SLOT,
+} from '../enums';
 import { STRINGS } from '../strings';
 import { usePageTitle } from '../usePageTitle';
 
@@ -28,6 +38,25 @@ const ART_OPTIONS = [
 ];
 
 const BG_OPTIONS = ['bg-a', 'bg-b', 'bg-c', 'bg-d'];
+
+// The two "Our Story" frames. `Art` is the same component the live pages fall
+// back to, so the preview shows exactly what visitors see before any upload.
+const STORY_TILES = [
+  {
+    key: STORY_SLOT,
+    shape: 'tall',
+    Art: StoryArtMain,
+    label: STRINGS.admin.storyMainTile,
+    help: STRINGS.admin.storyMainHelp,
+  },
+  {
+    key: STORY_DETAIL_SLOT,
+    shape: 'square',
+    Art: StoryArtDetail,
+    label: STRINGS.admin.storyDetailTile,
+    help: STRINGS.admin.storyDetailHelp,
+  },
+];
 
 const PER_PAGE = 12; // products shown per page in the admin table
 
@@ -209,6 +238,19 @@ export default function Admin() {
     }
   };
 
+  // The story slots show on two pages, so their confirmations say so — an admin
+  // who reads "live on the home page" would not know About Us had changed too.
+  const uploadedMessage = (key) => {
+    if (key === HERO_SLOT) return STRINGS.admin.heroUpdated;
+    if (STORY_TILES.some((t) => t.key === key)) return STRINGS.admin.storyUpdated;
+    return STRINGS.admin.photoUpdated;
+  };
+  const resetMessage = (key) => {
+    if (key === HERO_SLOT) return STRINGS.admin.heroReset;
+    if (STORY_TILES.some((t) => t.key === key)) return STRINGS.admin.storyReset;
+    return STRINGS.admin.cardReset;
+  };
+
   const onCollectionImage = async (key, e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -219,7 +261,7 @@ export default function Admin() {
       data.append('image', file);
       const res = await api(`/home-collections/${key}`, { method: 'PUT', body: data });
       setCollectionImages((prev) => ({ ...prev, [key]: res.image }));
-      toast(key === HERO_SLOT ? STRINGS.admin.heroUpdated : STRINGS.admin.photoUpdated, 'success');
+      toast(uploadedMessage(key), 'success');
     } catch (err) {
       toast(err.message, 'error');
     } finally {
@@ -236,7 +278,7 @@ export default function Admin() {
         delete next[key];
         return next;
       });
-      toast(key === HERO_SLOT ? STRINGS.admin.heroReset : STRINGS.admin.cardReset, 'success');
+      toast(resetMessage(key), 'success');
     } catch (err) {
       toast(err.message, 'error');
     } finally {
@@ -360,6 +402,49 @@ export default function Admin() {
                       className="mini-btn danger"
                       disabled={collectionBusy === c.key}
                       onClick={() => resetCollectionImage(c.key)}
+                    >
+                      {STRINGS.admin.reset}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <span className="field-label">{STRINGS.admin.storyLabel}</span>
+          <p className="muted collection-hint">{STRINGS.admin.storyHint}</p>
+          <div className="story-admin-grid">
+            {STORY_TILES.map(({ key, shape, Art, label, help }) => (
+              <div className="collection-tile" key={key}>
+                <span className="field-label">{label}</span>
+                <div className={`story-admin-preview ${shape}`}>
+                  {collectionImages[key]
+                    ? <img src={collectionImages[key]} alt={label} />
+                    : <Art className="story-photo" />}
+                  {!collectionImages[key] && <span className="hero-default-tag">{STRINGS.admin.defaultTag}</span>}
+                </div>
+                <p className="muted story-admin-help">{help}</p>
+                <div className="collection-actions">
+                  <label className={`mini-btn ${collectionBusy === key ? 'disabled' : ''}`}>
+                    {collectionBusy === key
+                      ? STRINGS.admin.uploading
+                      : collectionImages[key]
+                        ? STRINGS.admin.changePhoto
+                        : STRINGS.admin.uploadPhoto}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      disabled={collectionBusy === key}
+                      onChange={(e) => onCollectionImage(key, e)}
+                    />
+                  </label>
+                  {collectionImages[key] && (
+                    <button
+                      type="button"
+                      className="mini-btn danger"
+                      disabled={collectionBusy === key}
+                      onClick={() => resetCollectionImage(key)}
                     >
                       {STRINGS.admin.reset}
                     </button>

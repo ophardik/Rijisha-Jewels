@@ -1,20 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../api';
 import Reveal from '../components/Reveal';
+import { StoryPhoto, StoryArtMain, StoryArtDetail } from '../components/StoryArt';
 import { usePageTitle } from '../usePageTitle';
+import { STORY_SLOT, STORY_DETAIL_SLOT } from '../enums';
 import { STRINGS } from '../strings';
 import { ETSY_URL, whatsappUrl } from '../links';
 
+// The same two slots the home page reads, so one upload in Homepage Media drives
+// both pages. Bundled files at these paths are the next fallback, then the art.
 const STORY_MAIN = '/images/story-atelier.jpg';
 const STORY_DETAIL = '/images/story-detail.jpg';
-
-// Same treatment the home page uses: the photo is optional, and until one is
-// uploaded the frame falls back to the monogram rather than a broken image.
-function StoryPhoto({ src, alt, monogram = false }) {
-  const [missing, setMissing] = useState(false);
-  if (missing) return monogram ? <span className="story-placeholder">R</span> : null;
-  return <img className="story-photo" src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />;
-}
 
 // Paths only — the <svg> wrapper is shared, so the icons stay plain data and
 // need no keys of their own.
@@ -41,6 +38,12 @@ const ValueIcon = ({ paths }) => (
 
 export default function About() {
   usePageTitle(STRINGS.titles.about);
+  // Public, unauthenticated, and tiny. A failure just leaves the frames on their
+  // built-in art, so there is nothing to report to the visitor.
+  const [media, setMedia] = useState({});
+  useEffect(() => {
+    api('/home-collections').then(setMedia).catch(() => {});
+  }, []);
 
   return (
     <>
@@ -81,10 +84,18 @@ export default function About() {
             <div className="story-visual">
               <div className="story-stack">
                 <div className="story-frame">
-                  <StoryPhoto src={STORY_MAIN} alt={STRINGS.home.storyMainAlt} monogram />
+                  <StoryPhoto
+                    sources={[media[STORY_SLOT], STORY_MAIN]}
+                    alt={STRINGS.home.storyMainAlt}
+                    fallback={StoryArtMain}
+                  />
                 </div>
                 <div className="story-detail">
-                  <StoryPhoto src={STORY_DETAIL} alt={STRINGS.home.storyDetailAlt} />
+                  <StoryPhoto
+                    sources={[media[STORY_DETAIL_SLOT], STORY_DETAIL]}
+                    alt={STRINGS.home.storyDetailAlt}
+                    fallback={StoryArtDetail}
+                  />
                 </div>
                 <div className="story-badge">{STRINGS.home.storyBadge}</div>
               </div>

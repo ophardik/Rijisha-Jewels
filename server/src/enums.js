@@ -14,7 +14,14 @@ export const CATEGORY_ALL = 'all';
 
 // Home-page media slots: the four collection cards (photo) + the hero video
 export const HERO_SLOT = 'hero';
-export const COLLECTION_SLOTS = [...CATEGORIES, HERO_SLOT];
+
+// "Our Story" photography. Deliberately ONE pair of slots shared by the home
+// page and the About page rather than a set each: uploading once updates both,
+// so the two tellings of the story can never drift apart.
+export const STORY_SLOT = 'story';
+export const STORY_DETAIL_SLOT = 'storyDetail';
+
+export const COLLECTION_SLOTS = [...CATEGORIES, HERO_SLOT, STORY_SLOT, STORY_DETAIL_SLOT];
 
 export const SORT = {
   PRICE_ASC: 'price_asc',

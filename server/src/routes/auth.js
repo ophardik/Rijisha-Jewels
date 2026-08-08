@@ -10,6 +10,13 @@ const router = Router();
 
 const publicUser = (u) => ({ id: u._id, name: u.name, email: u.email, isAdmin: u.isAdmin, wishlist: u.wishlist });
 
+// The schema's `lowercase`/`trim` normalise on SAVE, not on QUERY — so a stored
+// address is always clean, but a lookup built from raw input is not. Without
+// this, an address pasted with a trailing space (or typed on a phone keyboard
+// that appends one) fails to match a perfectly good account and the user is
+// told their credentials are invalid.
+const normaliseEmail = (value) => value?.trim().toLowerCase();
+
 // How long a reset link stays usable. Long enough to walk to another device,
 // short enough that a link left sitting in an inbox stops being a key.
 const RESET_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -29,7 +36,7 @@ router.post('/register', async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
-    const exists = await User.findOne({ email: email.toLowerCase() });
+    const exists = await User.findOne({ email: normaliseEmail(email) });
     if (exists) return res.status(409).json({ message: 'An account with this email already exists' });
 
     const user = await User.create({ name, email, password });
@@ -43,7 +50,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email?.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: normaliseEmail(email) }).select('+password');
     if (!user || !(await user.matchPassword(password || ''))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -62,7 +69,7 @@ router.post('/login', async (req, res) => {
 router.post('/admin/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email?.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: normaliseEmail(email) }).select('+password');
     if (!user || !(await user.matchPassword(password || ''))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -83,7 +90,7 @@ router.post('/admin/login', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
   const done = () => res.json({ message: 'If that email has an account, a reset link is on its way.' });
   try {
-    const email = req.body?.email?.trim().toLowerCase();
+    const email = normaliseEmail(req.body?.email);
     if (!email) return res.status(400).json({ message: 'Email is required' });
 
     const user = await User.findOne({ email }).select('+resetRequestedAt');

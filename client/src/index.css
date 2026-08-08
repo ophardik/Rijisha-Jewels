@@ -1109,16 +1109,123 @@ input, select { font-family: inherit; }
   z-index: 2;
   pointer-events: none;
 }
-/* Neutral holding state while the real photography is pending — a brand mark,
-   never a stand-in illustration of a piece. */
-.story-placeholder {
-  font-family: var(--font-display);
-  font-size: 5rem;
-  color: rgba(255,255,255,0.13);
-  letter-spacing: 0.08em;
-}
-/* Sits over the illustration so a failed/absent photo simply reveals the art. */
+/* Shared by the <img> and by the StoryArt wrapper that stands in for it, so both
+   fill the frame identically — object-fit covers the photo, and the SVG's own
+   preserveAspectRatio="slice" does the same job for vector art. */
 .story-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- StoryArt: parallax + travelling light ----------
+   usePointerLight publishes the cursor as --px/--py in -1..1 on each frame;
+   everything below is derived from those two numbers. Without JS (or with it
+   bailed out on touch / reduced-motion) they stay 0 and the art renders as a
+   plain still, with only the CSS idle drift moving.
+
+   The smoothing is applied to the VARIABLES, not to `transform`. Putting
+   `transition: transform` on an element whose transform is built from var()
+   makes Chrome keep serving the pre-change value indefinitely — the tilt simply
+   never arrives (verified: identical rule rotates correctly the moment the
+   transition is removed). Registering the two properties gives them a type, so
+   they interpolate on their own and every dependent transform below follows
+   them instantly and in lockstep. */
+@property --px {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+@property --py {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+.story-art {
+  --px: 0;
+  --py: 0;
+  perspective: 900px;
+  overflow: hidden;
+  transition: --px 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), --py 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.story-art.is-live { transition: --px 0.1s linear, --py 0.1s linear; }
+.story-art > svg,
+.story-art > .story-media {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Overscan: the tilt below swings the plate far enough that un-scaled edges
+     would expose the frame behind it at the corners. */
+  transform: scale(1.045) rotateX(calc(var(--py) * -2.6deg)) rotateY(calc(var(--px) * 3.4deg));
+}
+.story-art > .story-media { position: absolute; inset: 0; object-fit: cover; }
+
+/* An uploaded photo is one flat layer — there is nothing inside it to parallax,
+   so depth has to come from the surface instead: a highlight sliding across it
+   like light on glass, travelling further than the tilt so the plane reads as
+   angled rather than as a picture that merely leans. */
+.story-gloss {
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 240, 214, 0.34) 0%,
+    rgba(201, 164, 104, 0.12) 38%,
+    rgba(154, 123, 79, 0) 68%
+  );
+  transform: translate(calc(var(--px) * 20%), calc(var(--py) * 17%));
+}
+/* Settles the photo into the dark frame the same way the artwork's own vignette
+   does, so the two never look like they belong to different pages. */
+.story-art.has-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 44%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.38) 100%);
+}
+
+/* Depth: further layers move against the cursor and least, nearer layers move
+   with it and most. The ratios, not the amounts, are what read as distance. */
+.story-art .l-back { transform: translate(calc(var(--px) * -5px), calc(var(--py) * -4px)); }
+.story-art .l-piece { transform: translate(calc(var(--px) * 4px), calc(var(--py) * 3px)); }
+.story-art .l-gem { transform: translate(calc(var(--px) * 5px), calc(var(--py) * 4px)); }
+.story-art .l-dust { transform: translate(calc(var(--px) * 15px), calc(var(--py) * 11px)); }
+
+/* The lamp and the specular are the same light at two scales — the broad wash
+   over the whole scene, and the tight glint on the metal. The glint travels
+   further than the lamp because a specular sweeps faster than the light that
+   causes it; that mismatch is what makes the surface look curved. */
+.story-art .lamp,
+.story-art .spec { mix-blend-mode: screen; }
+.story-art .lamp { transform: translate(calc(var(--px) * 74px), calc(var(--py) * 62px)); }
+.story-art .spec { transform: translate(calc(var(--px) * 30px), calc(var(--py) * 26px)); }
+
+/* Idle: with no pointer (touch, or the cursor elsewhere) the light drifts on its
+   own, so the piece still reads as lit rather than as a flat drawing. */
+@keyframes story-lamp-drift {
+  0%, 100% { transform: translate(-46px, -34px); }
+  50% { transform: translate(52px, 38px); }
+}
+@keyframes story-spec-drift {
+  0%, 100% { transform: translate(-19px, -14px); }
+  50% { transform: translate(21px, 16px); }
+}
+/* Percentages, not px — the gloss is sized off the frame, not the viewBox. */
+@keyframes story-gloss-drift {
+  0%, 100% { transform: translate(-13%, -11%); }
+  50% { transform: translate(14%, 12%); }
+}
+.story-art:not(.is-live) .lamp { animation: story-lamp-drift 11s ease-in-out infinite; }
+.story-art:not(.is-live) .spec { animation: story-spec-drift 11s ease-in-out infinite; }
+.story-art:not(.is-live) .story-gloss { animation: story-gloss-drift 11s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .story-art,
+  .story-art.is-live { transition: none; }
+  .story-art:not(.is-live) .lamp,
+  .story-art:not(.is-live) .spec,
+  .story-art:not(.is-live) .story-gloss { animation: none; }
+}
 /* Macro detail shot, tucked into the lower-left corner of the main frame. */
 .story-detail {
   position: absolute;
@@ -1839,6 +1946,32 @@ label.mini-btn { display: inline-flex; align-items: center; cursor: pointer; }
   border-radius: 9px;
 }
 .collection-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+/* "Our Story" tiles. Unlike the collection cards these preview at the frames'
+   real aspect ratios (4:5 and 1:1) — the whole point is judging a crop before
+   it goes live, which a uniform tile height would hide. */
+.story-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 240px));
+  gap: 24px;
+  align-items: start;
+}
+.story-admin-preview {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #23232a, #3c3f47 55%, #565b64);
+}
+.story-admin-preview.tall { aspect-ratio: 4 / 5; }
+.story-admin-preview.square { aspect-ratio: 1; }
+.story-admin-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.story-admin-help { font-size: 0.82rem; margin-top: 8px; }
 
 @media (max-width: 900px) {
   .admin-grid { grid-template-columns: 1fr; }

@@ -9,7 +9,8 @@
     "start": "node src/index.js",
     "check": "node src/checkConfig.js",
     "migrate:uploads": "node src/migrateUploads.js",
-    "migrate:database": "node src/migrateDatabase.js"
+    "migrate:database": "node src/migrateDatabase.js",
+    "admin:set": "node src/setAdmin.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

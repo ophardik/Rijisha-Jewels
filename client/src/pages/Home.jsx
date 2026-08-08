@@ -6,8 +6,9 @@ import ProductCard from '../components/ProductCard';
 import SkeletonGrid from '../components/SkeletonGrid';
 import Reveal from '../components/Reveal';
 import InstaStrip from '../components/InstaStrip';
+import { StoryPhoto, StoryArtMain, StoryArtDetail } from '../components/StoryArt';
 import { usePageTitle } from '../usePageTitle';
-import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT } from '../enums';
+import { CATEGORY, CATEGORY_LABEL, HERO_SLOT, SORT, STORY_SLOT, STORY_DETAIL_SLOT } from '../enums';
 import { STRINGS } from '../strings';
 
 const COLLECTIONS = [
@@ -17,19 +18,13 @@ const COLLECTIONS = [
   { key: CATEGORY.ANTIQUE, art: 'tikka' },
 ].map((c) => ({ ...c, title: CATEGORY_LABEL[c.key], sub: STRINGS.home.collectionSub[c.key] }));
 
-// Story visual — photography only. This section talks about real artisans, so
-// it deliberately does NOT fall back to the JewelArt illustrations; until the
-// files land in client/public/images/ the frame stays an empty brand plate.
+// Story visual — real photography wins whenever it exists, in this order: what
+// the admin uploaded (Homepage Media → Our Story), then anything bundled at
+// these paths, then the StoryArt compositions. The art depicts the jewellery
+// itself, never a stand-in "artisan", so the section's claims about real people
+// are only ever carried by the copy.
 const STORY_MAIN = '/images/story-atelier.jpg';
 const STORY_DETAIL = '/images/story-detail.jpg';
-
-function StoryPhoto({ src, alt, monogram }) {
-  const [missing, setMissing] = useState(false);
-  if (missing) return monogram ? <span className="story-placeholder">R</span> : null;
-  return (
-    <img className="story-photo" src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
-  );
-}
 
 export default function Home() {
   usePageTitle(STRINGS.titles.home);
@@ -191,10 +186,18 @@ export default function Home() {
           <div className="story-visual">
             <div className="story-stack">
               <div className="story-frame">
-                <StoryPhoto src={STORY_MAIN} alt={STRINGS.home.storyMainAlt} monogram />
+                <StoryPhoto
+                  sources={[collectionImages[STORY_SLOT], STORY_MAIN]}
+                  alt={STRINGS.home.storyMainAlt}
+                  fallback={StoryArtMain}
+                />
               </div>
               <div className="story-detail">
-                <StoryPhoto src={STORY_DETAIL} alt={STRINGS.home.storyDetailAlt} />
+                <StoryPhoto
+                  sources={[collectionImages[STORY_DETAIL_SLOT], STORY_DETAIL]}
+                  alt={STRINGS.home.storyDetailAlt}
+                  fallback={StoryArtDetail}
+                />
               </div>
               <div className="story-badge">{STRINGS.home.storyBadge}</div>
             </div>

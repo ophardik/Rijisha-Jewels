@@ -21,6 +21,11 @@ export const CATEGORY_ALL = 'all';
 // Home-page media slot for the hero video (the four categories are the card slots)
 export const HERO_SLOT = 'hero';
 
+// "Our Story" photography — one shared pair of slots, so a single upload drives
+// both the home page and the About page. Keep in sync with server enums.
+export const STORY_SLOT = 'story';
+export const STORY_DETAIL_SLOT = 'storyDetail';
+
 export const SORT = {
   PRICE_ASC: 'price_asc',
   PRICE_DESC: 'price_desc',
