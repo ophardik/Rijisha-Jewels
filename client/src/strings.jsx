@@ -49,7 +49,7 @@ export const STRINGS = {
     loginRegister: 'Login / Register',
     contactTitle: 'Contact Us',
     address: <>Rijisha Jewellers, 512 Hanuman Ji ka Rasta Tripolia Bazaar ,<br />Vishveshwarji Jaipur 302003</>,
-    phone: '+91 98765 43210',
+    phone: '+91 96721 54108',
     email: 'rijishaenterprises@gmail.com',
     copyright: '© 2026 Rijisha Jewellers. All rights reserved.',
     tagline: 'Handcrafted with ♥ in India',
@@ -63,7 +63,7 @@ export const STRINGS = {
     heroCtaStory: 'Our Story',
     heroStats: [
       { value: '92.5%', label: 'Pure Silver' },
-      { value: '5,000+', label: 'Happy Customers' },
+      { value: '200+', label: 'Exclusive In-House Designs' },
       { value: '100%', label: 'Hallmarked' },
     ],
     heroVideoAria: 'Model flaunting Rijisha silver jewellery',
@@ -85,7 +85,7 @@ export const STRINGS = {
     featuredLoader: 'Bringing out the bestsellers…',
     viewAll: 'View All Pieces',
     promises: [
-      { title: '925 Sterling Silver', sub: 'BIS hallmarked purity' },
+      { title: '925 Sterling Silver', sub: 'Pure Silver' },
       { title: 'Handcrafted with Care', sub: 'Shaped by skilled artisans' },
       { title: 'Premium Rhodium-Plated Finish', sub: 'Long-lasting white lustre' },
       { title: 'Uniquely Crafted, Never Replicated', sub: 'No two pieces ever alike' },
@@ -237,7 +237,7 @@ export const STRINGS = {
     discountOff: (pct) => `${pct}% off`,
     taxNote: 'Inclusive of all taxes · Delivery in 5-7 days',
     points: [
-      '92.5% pure sterling silver, BIS hallmarked',
+      '92.5% pure sterling silver',
       'Anti-tarnish e-coating for lasting shine',
       'Ships in premium gift packaging',
     ],
