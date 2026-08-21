@@ -160,7 +160,7 @@ export const STRINGS = {
       { value: '3', label: 'Generations of Silversmiths' },
       { value: '92.5%', label: 'Sterling Silver, Always' },
       { value: 'One Creation. One Chance.', label: 'Every Carved Piece' },
-      { value: 'Jaipur', label: 'Handmade in India' },
+      { value: 'Jaipur', label: 'Handmade in India', wide: true },
     ],
     storyEyebrow: 'How It Began',
     storyTitle: <>From a Workbench<br />in Jaipur</>,

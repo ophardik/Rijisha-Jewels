@@ -63,10 +63,14 @@ export default function About() {
               {STRINGS.about.stats.map((stat) => {
                 // Short values ("3", "92.5%") stay display-sized. A written-out
                 // phrase is set smaller and, on narrow screens, given the whole
-                // row so it never has to wrap.
+                // row so it never has to wrap. stat.wide opts a short value with
+                // an unusually long label ("Jaipur" / "Handmade in India") into
+                // the same full-row treatment — otherwise it's stranded alone in
+                // one half of a two-column row with the other half empty.
                 const phrase = stat.value.length > 8;
+                const wide = phrase || stat.wide;
                 return (
-                  <div className={`about-stat ${phrase ? 'wide' : ''}`} key={stat.label}>
+                  <div className={`about-stat ${wide ? 'wide' : ''}`} key={stat.label}>
                     <b className={phrase ? 'phrase' : ''}>{stat.value}</b>
                     <span>{stat.label}</span>
                   </div>
